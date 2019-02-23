@@ -10,7 +10,6 @@ private:
     int elektro;
 
 public:
-	Elektro();
     Elektro(int elektro) : elektro(elektro) {}
 
     int getElektro() const {
