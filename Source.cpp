@@ -1,6 +1,7 @@
 #include "Player.h"
 
 using namespace std;
+	
 //constructor for a player setting initail $$ and color  
 Player::Player(string color) {
 		this->house.setColor(color);
