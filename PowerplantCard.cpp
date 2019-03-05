@@ -53,7 +53,7 @@ string PowerplantCard::getResources() const
     string res = "";
     for(Resource r : resources)
     {
-        res.append(RESOURCE_NAMES.at(r) + " ");
+        res.append(getResourceName(r) + " ");
     }
 
     return res;
@@ -68,13 +68,13 @@ string PowerplantCard::info() const
         info.append("uses: ");
         for(int i = 0; i < resourceTypesSize; i++)
         {
-            info.append(RESOURCE_NAMES.at(resourceTypes[i]) + " ");
+            info.append(getResourceName(resourceTypes[i]) + " ");
         }
         info.append("\n");
     } else {
         info.append("ecological\n");
     }
-    info.append("stored: " + getResources() + "\n");
+    // info.append("stored: " + getResources() + "\n");
     info.append("req: " + to_string(needed) + "\n");
     info.append("cities: " + to_string(powerable));
 

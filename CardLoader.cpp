@@ -13,6 +13,7 @@ using namespace std;
 #include "Resource.h"
 
 void shuffle(PowerplantCard cards[], int size);
+Resource getResourceByName(string r);
 
 int main(int argc, char *argv[])
 {
@@ -20,15 +21,20 @@ int main(int argc, char *argv[])
     const int MARKET_SIZE = 8;
 
     PowerplantCard cards[NUM_POWER_PLANTS];
+
     fstream input;
+
     int name;
     string resources;
     int powerable;
+
     input.open("powerplants.txt");
+
     int i = 0;
     while(input >> name >> resources >> powerable)
     {
         PowerplantCard c;
+
         int needed = stoi(resources.substr(0, 1));
         if(needed > 0)
         {
@@ -36,6 +42,7 @@ int main(int argc, char *argv[])
             size_t size = 0;
             size_t start = 2;
             size_t end = resources.find(",");
+
             while(end != string::npos)
             {
                 types[size++] = resources.substr(start, end - start);
@@ -43,10 +50,13 @@ int main(int argc, char *argv[])
                 end = resources.find(",", start);
 
             }
+
             types[size++] = resources.substr(start, end);
-            if(size == 1) c = PowerplantCard(name, powerable, needed, RESOURCE_VALUES.at(types[0]));
-            else if(size == 2) c = PowerplantCard(name, powerable, needed, RESOURCE_VALUES.at(types[0]), RESOURCE_VALUES.at(types[1]));
-            c.store(RESOURCE_VALUES.at(types[0]));
+
+            if(size == 1) c = PowerplantCard(name, powerable, needed, getResourceByName(types[0]));
+
+            else c = PowerplantCard(name, powerable, needed, getResourceByName(types[0]), getResourceByName(types[1]));
+
         } else {
             c = PowerplantCard(name, powerable, needed);
         }
@@ -79,16 +89,20 @@ int main(int argc, char *argv[])
 
     cout << "MARKET:" << endl;
 
-    for(int i = 0; i < MARKET_SIZE; i++)
+    i = 1;
+    for(PowerplantCard& c : market)
     {
-        cout << market[i].info() << endl;
+        cout << i << ". " << c.info() << endl << endl;
+        i++;
     }
 
     cout << endl << "DECK:" << endl;
 
+    i = 1;
     for(Card* cPtr : deck)
     {
-        cout << cPtr->info() << endl;
+        cout << i << ". " << cPtr->info() << endl << endl;
+        i++;
     }
 
     cout << endl << "SUMMARY:"<< endl;
@@ -109,4 +123,13 @@ void shuffle(PowerplantCard cards[], int size)
         cards[r] = cards[max];
         cards[max--] = temp;
     }
+}
+
+Resource getResourceByName(string r)
+{
+    if(r == "coal") return COAL;
+    if(r == "oil") return OIL;
+    if(r == "garbage") return GARBAGE;
+    if(r == "uranium") return URANIUM;
+    return COAL; // keep compiler happy
 }
