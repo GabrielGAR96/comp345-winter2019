@@ -35,24 +35,24 @@ void Player::auctionCard(PowerplantCard card, int value){
 	}
 //buy a card and places in card array, if player already has 3 cards it will ask to swap for one
 void Player::purchaseCard(PowerplantCard card, int value) {
-		/* if (cardCounter == 3) { */
-		/* 	int position; */
-		/* 	cout << "What card would you like to swap with?" << endl; */
-		/* 	cout << "Press 1 for " << cardArray[0].getName(); */
-		/* 	cout << "\nPress 2 for " << cardArray[1].getName(); */
-		/* 	cout << "\nPress 3 for " << cardArray[2].getName(); */
-		/* 	cin >> position; */
-		/* 	while (position > 3 || position < 0) { */
-		/* 		cout << "Please chose a valid option or press -1 to cancel trade: "; */
-		/* 		cin >> position; */
-		/* 		if (position == -1) */
-		/* 			return; */
-		/* 	} */
+		if (cardCounter == 3) {
+			int position;
+			cout << "What card would you like to swap with?" << endl;
+			cout << "Press 1 for " << cardArray[0].getName();
+			cout << "\nPress 2 for " << cardArray[1].getName();
+			cout << "\nPress 3 for " << cardArray[2].getName();
+			cin >> position;
+			while (position > 3 || position < 0) {
+				cout << "Please chose a valid option or press -1 to cancel trade: ";
+				cin >> position;
+				if (position == -1)
+					return;
+			}
+		}
 			money = money - value;
 			cardArray[cardCounter] = card;
 			cardCounter++;
             cout << endl << cardCounter << endl;
-		/* } */
 	}
 //outputs the players current cards
 string Player::getCards() {
