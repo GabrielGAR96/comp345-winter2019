@@ -4,7 +4,10 @@
 
 #include "House.h"
 
+House::House()
+{
+}
+
 House::House(HouseColor houseColor) : houseColor(houseColor) {}
 
 House::~House() {}
-

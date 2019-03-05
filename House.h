@@ -16,6 +16,7 @@ private:
     HouseColor houseColor;
 
 public:
+    House();
     House(HouseColor houseColor);
     ~House();
 
