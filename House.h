@@ -13,14 +13,14 @@
 class House{
 private:
     int price = 0;
-    std::shared_ptr<HouseColor> color;
+    HouseColor houseColor;
 
 public:
     House(std::shared_ptr<HouseColor> color);
     ~House();
 
     int getPrice() const {return price;}
-    std::shared_ptr<HouseColor> GetColor() const {return color;}
+    std::shared_ptr<HouseColor> getHouseColorByName(string color) const {}
     void setPrice(int price) {this->price = price;}
 };
 
