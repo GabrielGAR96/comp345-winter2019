@@ -10,11 +10,11 @@
 //#include "City.h"
 
 class Player {
-	
+
 
 	private:
 
-		
+
 		vector<string> cities;
 		PowerplantCard cardArray[3];
 		HouseColor color;
@@ -33,8 +33,8 @@ class Player {
 		void purchaseCard(PowerplantCard card, int value);
 		//method to get cards
 		string getCards();
-		//determines score from owned cards 
-		string getScore();
+		//determines score from owned cards
+		int getScore();
 		//chooses resources to buy
 		void buyResources();
 		//setter for $$
@@ -43,16 +43,16 @@ class Player {
 		int getMoney();
 		//buys resource and stores it in card
 		void buyResource(int cardPosition, Resource resources, int amount, int price);
-		//gets resources from cards 
+		//gets resources from cards
 		string getResources();
-		//adds city name in vector 
+		//adds city name in vector
 		void buyCities(string city);
 		//outputs the cities owned
 		string getCities();
 		//returns the number of cities currently owned
 		int getNumCities();
 		string getColor();
-
+		void toString();
 
 
 

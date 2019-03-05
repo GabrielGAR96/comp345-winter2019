@@ -52,28 +52,24 @@ void Player::purchaseCard(PowerplantCard card, int value) {
 			money = money - value;
 			cardArray[cardCounter] = card;
 			cardCounter++;
-            cout << endl << cardCounter << endl;
 	}
 //outputs the players current cards
 string Player::getCards() {
-		string myCards = "Your current cards are:\n";
-			if (cardCounter == 0)
-				return "You have no owned cards";
-			else {
+			string myCards = "";
 			for (int i = 0; i < cardCounter; i++) {
 				myCards.append(cardArray[i].info());
 			}
-		}
+
         return myCards;
 	}
 //determins score based on highest value card
-string Player::getScore() {
-		string myScore = "Your current highest value power plant is: ";
+int Player::getScore() {
 		int price=0;
+		int myScore=0;
 		for (int i = 0; i < cardCounter; i++)
 			if (cardArray[i].getName() > price)
 				price = cardArray[i].getName();
-		myScore.append(to_string(price));
+				myScore = price;
         return myScore;
 	}
 //setter for Elektro
@@ -111,12 +107,25 @@ void Player::buyCities(string city) {
 string Player::getCities() {
 		string city;
 		for (string c : cities)
-			city.append(c);
+			city.append(c + " ");
 		return city;
 	}
 string Player::getColor() {
 
-	string hc = "Players house color is: ";
-	hc.append(getHouseColorName(color));
-    return hc;
+	return getHouseColorName(color);
+
+}
+void Player::toString(){
+	std::cout << "Score: " << this->getScore() <<'\n';
+	std::cout << "Color: " << this->getColor()<<'\n';
+	std::cout << "Elektro:  " <<this->getMoney() <<'\n';
+	std::cout << "Resources: " <<this->getResources() <<'\n';
+	std::cout << "Cities: " << this->getCities()<<'\n';
+	std::cout << "Cards:\n" << this->getCards()<<'\n';
+
+
+
+
+
+
 }
