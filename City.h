@@ -1,53 +1,43 @@
-//
-// Created by Gabriel Albuquerque Ribeiro on 2019-03-01.
-//
-#pragma once
-#ifndef POWERGRID_CITY_H
-#define POWERGRID_CITY_H
-#include "Connection.h"
-#include "House.h"
-#include <string>
-#include <memory>
-#include <vector>
+#ifndef CITY_H
+#define CITY_H
 
-using std::string;
+#include <string>
+#include <ostream>
+#include <functional>
+#include <vector>
+using namespace std;
+
+#include "House.h"
+#include "Player.h"
+
+class City;
+namespace std {
+    template <> struct hash<City>
+    {
+        size_t operator()(const City& city) const;
+    };
+}
 
 class City
 {
-private:
-    static const int MAX_HOUSES = 3;
+    private:
+        string name;
+        int region=0;
+        int numOccupants = 0;
+        int buildingCost = 10;
+        House houses[3];
+    public:
+        City();
+        City(const string& name, int region);
+        string getName() const;
+        void setName(const string& name);
+        int getRegion() const;
+        void setRegion(const int region);
+        bool build(Player player);
+        bool operator<(const City& rhs) const;
+        bool operator==(const City& rhs) const;
 
-    int firstHousePrice = 10;
-    int secondHousePrice = 15;
-    int thirdHousePrice = 20;
-
-    string name = "";
-    std::vector<std::shared_ptr<Connection>> connections;
-    std::vector<House*> houses;
-
-public:
-    City() {}
-    explicit City(string name) : name(name) {}
-
-    const string &getName() const {
-        return name;
-    }
-
-    void setName(const string &name) {
-        City::name = name;
-    }
-
-    std::vector<House*>& getHouses(){return houses;}
-    int getNumberOfHouses()  {getHouses().size();}
-    std::vector<std::shared_ptr<Connection>> const& getConnections() const { return getConnections();}
-
-    void addConnection(std::shared_ptr<Connection> connection){connections.push_back(connection);}
-    bool addHouse(House* house);
-
-    int getHousePrice() const;
-    bool isFull() const;
-    bool isConnectedTo (string cityName);
-
+        friend ostream& operator<<(ostream& out, const City& rhs);
 };
 
-#endif //POWERGRID_CITY_H
+#endif
