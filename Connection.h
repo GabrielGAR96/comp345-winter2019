@@ -38,7 +38,7 @@ public:
         Connection::cost = cost;
     }
 
-   )
+   
 private:
     std::shared_ptr<City> first;
     std::shared_ptr<City> second;
