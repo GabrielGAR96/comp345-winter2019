@@ -39,6 +39,16 @@ void City::setRegion(int region)
     this->region = region;
 }
 
+string City::getHouses() const
+{
+    string result = "";
+    for(int i = 0; i < numOccupants; i++)
+    {
+        result.append("test");
+    }
+    return result;
+}
+
 bool City::build(House house)
 {
     if(numOccupants < 3) {
@@ -61,7 +71,8 @@ bool City::operator==(const City & rhs) const
 
 ostream& operator<<(ostream& out, const City & rhs)
 {
-    out << rhs.getName();
+    out << rhs.getName() << " " << rhs.getRegion() << " ";
+    out << rhs.getHouses();
     return out;
 }
 

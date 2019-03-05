@@ -19,11 +19,12 @@ class Map
         int marketSize = 0;
         Elektro bank = 0;
     public:
-        Map(string mapFile);
+        Map(UndirectedGraph<City> cities);
         void addElektroToBank(int amount);
         void addResourceToPool(Resource r);
         void addResourceToMarket(Resource r);
         void buyCity(City city, House house);
+        void printMap() const;
 };
 
 #endif

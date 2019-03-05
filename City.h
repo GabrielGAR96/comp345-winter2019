@@ -32,6 +32,7 @@ class City
         void setName(const string& name);
         int getRegion() const;
         void setRegion(const int region);
+        string getHouses() const;
         bool build(House house);
         bool operator<(const City& rhs) const;
         bool operator==(const City& rhs) const;

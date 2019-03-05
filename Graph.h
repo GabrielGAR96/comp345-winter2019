@@ -60,11 +60,21 @@ class Graph
         int numVertices() const;
         virtual int numEdges() const = 0;
         bool addVertex(const T& x);
+        T delVertex(const T& x);
         virtual bool addEdge(const T& u, const T& v, double cost) = 0;
         unordered_set<T> getVerts() const;
         vector<Edge<T> > getEdges(T v) const;
         static bool isConnected(const Graph<T>& g);
 };
+
+template<typename T>
+T Graph<T>::delVertex(const T& x)
+{
+    T answer = *(verts.find(x));
+    adjList.erase(x);
+    verts.erase(x);
+    return answer;
+}
 
 template<typename T>
 Graph<T>::Graph()
