@@ -14,9 +14,9 @@ class House{
 private:
     int price = 0;
     HouseColor houseColor;
-
+    
 public:
-    House(std::shared_ptr<HouseColor> color);
+    House(HouseColor houseColor);
     ~House();
 
     int getPrice() const {return price;}
