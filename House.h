@@ -20,7 +20,7 @@ public:
     ~House();
 
     int getPrice() const {return price;}
-    HouseColor getHouseColorByName(string color) const {}
+    HouseColor getHouseColorByName(string color) const;
     void setPrice(int price) {this->price = price;}
 };
 
