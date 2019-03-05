@@ -52,7 +52,7 @@ inline string getHouseColorName (HouseColor houseColor) {
             return "yellow";
         case GREEN:
             return "green";
-        case PURPLE
+        case PURPLE:
             return "purple";
         default:
             return "unknown";

@@ -3,7 +3,7 @@
 #include<string>
 #include"House.h"
 #include"Resource.h"
-#include"Cards.h"
+#include"Card.h"
 #include<vector>
 #include "HouseColor.h"
 #include "PowerplantCard.h"
@@ -19,7 +19,6 @@ class Player {
 		PowerplantCard cardArray[3];
 		HouseColor color;
 		int cardCounter;
-		Resource resources;
 		int money;
 
 	public:

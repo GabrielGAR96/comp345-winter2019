@@ -1,15 +1,21 @@
 #include "Player.h"
+#include "PowerplantCard.h"
+#include "HouseColor.h"
 
 using namespace std;
-	
-//constructor for a player setting initail $$ and color  
+
+//constructor for a player setting initail $$ and color
 Player::Player(HouseColor color) {
 	this->color = color;
 	this->cardCounter = 0;
 	this->money = 50;
-	this->resources;
-		
-	}
+
+}
+
+Player::~Player()
+{
+}
+
 //auction a selected card modifying the auction value on card
 void Player::auctionCard(PowerplantCard card, int value){
 		int bet;
@@ -35,7 +41,7 @@ void Player::purchaseCard(PowerplantCard card, int value) {
 			cout << "Press 1 for " << cardArray[0].getName();
 			cout << "\nPress 2 for " << cardArray[1].getName();
 			cout << "\nPress 3 for " << cardArray[2].getName();
-			cin >> position; 
+			cin >> position;
 			while (position > 3 || position < 0) {
 				cout << "Please chose a valid option or press -1 to cancel trade: ";
 				cin >> position;
@@ -49,24 +55,25 @@ void Player::purchaseCard(PowerplantCard card, int value) {
 	}
 //outputs the players current cards
 string Player::getCards() {
-		cout << "Your current cards are:" << endl;
+		string myCards = "Your current cards are:\n";
 			if (cardCounter == 0)
-				cout << "You have no owned cards";
+				return "You have no owned cards";
 			else {
 			for (int i = 0; i < cardCounter; i++) {
-				cout << cardArray[i].getName();
-				cout << endl;
+				myCards.append(to_string(cardArray[i].getName()) + "\n");
 			}
 		}
+        return myCards;
 	}
 //determins score based on highest value card
 string Player::getScore() {
-		cout << "Your current highest value power plant is: ";
+		string myScore = "Your current highest value power plant is: ";
 		int price=0;
 		for (int i = 0; i < cardCounter; i++)
-			if (cardArray[i].getName> price)
-				price = cardArray[i].getName;
-		cout << price;
+			if (cardArray[i].getName() > price)
+				price = cardArray[i].getName();
+		myScore.append(to_string(price));
+        return myScore;
 	}
 //setter for Elektro
 void Player::setMoney(int amount) {
@@ -76,24 +83,26 @@ void Player::setMoney(int amount) {
 int Player::getMoney() {
 		return this->money;
 	}
-//returns the number of cities the player currently owns 
+//returns the number of cities the player currently owns
 int Player::getNumCities() {
-		return cities.size;
+		return cities.size();
 	}
-//buys resources based on the currently owned cards and stores it in the card 
+//buys resources based on the currently owned cards and stores it in the card
 void Player::buyResource(PowerplantCard card, Resource resources, int amount, int price) {
 		for (int i = 0; i < amount; i++) {
 			card.store(resources);
 			this->money = money - price;
 		}
 	}
-//outputs the resources the player owns 
+//outputs the resources the player owns
 string Player::getResources() {
+    string result = "";
 		for (int i = 0; i < cardCounter; i++) {
-			cardArray[i].getResources();
+			result.append(cardArray[i].getResources() + " ");
 		}
+        return result;
 	}
-//adds the the name of the cities that the player owns in a vector 
+//adds the the name of the cities that the player owns in a vector
 void Player::buyCities(string city) {
 		cities.push_back(city);
 	}
@@ -105,38 +114,8 @@ string Player::getCities() {
 		return city;
 	}
 string Player::getColor() {
-	
-	cout << "Players house color is: ";
-	cout<< getHouseColorName(color);
 
+	string hc = "Players house color is: ";
+	hc.append(getHouseColorName(color));
+    return hc;
 }
-
-int main() {
-
-	Player player1(BLACK);
-
-	std::cout << "Player 1 has been created with house color black\n\n";
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
