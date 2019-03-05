@@ -3,18 +3,19 @@
 using namespace std;
 	
 //constructor for a player setting initail $$ and color  
-Player::Player(string color) {
-		this->house.setColor(color);
-		this->cardCounter = 0;
-		this->money = 50;
-		this->resources;
+Player::Player(HouseColor color) {
+	this->color = color;
+	this->cardCounter = 0;
+	this->money = 50;
+	this->resources;
+		
 	}
 //auction a selected card modifying the auction value on card
-void Player::auctionCard(Card card){
+void Player::auctionCard(PowerplantCard card, int value){
 		int bet;
 		cout << "Please enter an auction amount: ";
 		cin >> bet;
-		while (bet < card.getAuctionPrice()) {
+		while (bet < value) {
 			cout << "Please enter a bet greater than the current auction value: ";
 			cin >> bet;
 		}
@@ -25,10 +26,9 @@ void Player::auctionCard(Card card){
 			if (bet == 0)
 				return;
 		}
-		card.setAuctionPrice(bet);
 	}
 //buy a card and places in card array, if player already has 3 cards it will ask to swap for one
-void Player::purchaseCard(Card card) {
+void Player::purchaseCard(PowerplantCard card, int value) {
 		if (cardCounter == 3) {
 			int position;
 			cout << "What card would you like to swap with?" << endl;
@@ -42,7 +42,7 @@ void Player::purchaseCard(Card card) {
 				if (position == -1)
 					return;
 			}
-			money = money - card.getAuctionPrice;
+			money = money - value;
 			cardArray[position - 1] = card;
 			cardCounter++;
 		}
@@ -64,8 +64,8 @@ string Player::getScore() {
 		cout << "Your current highest value power plant is: ";
 		int price=0;
 		for (int i = 0; i < cardCounter; i++)
-			if (cardArray[i].getprice > price)
-				price = cardArray[i].getprice;
+			if (cardArray[i].getName> price)
+				price = cardArray[i].getName;
 		cout << price;
 	}
 //setter for Elektro
@@ -81,7 +81,7 @@ int Player::getNumCities() {
 		return cities.size;
 	}
 //buys resources based on the currently owned cards and stores it in the card 
-void Player::buyResource(Card card, Resource resources, int amount, int price) {
+void Player::buyResource(PowerplantCard card, Resource resources, int amount, int price) {
 		for (int i = 0; i < amount; i++) {
 			card.store(resources);
 			this->money = money - price;
@@ -90,7 +90,7 @@ void Player::buyResource(Card card, Resource resources, int amount, int price) {
 //outputs the resources the player owns 
 string Player::getResources() {
 		for (int i = 0; i < cardCounter; i++) {
-			cardArray[i].getresources();
+			cardArray[i].getResources();
 		}
 	}
 //adds the the name of the cities that the player owns in a vector 
@@ -104,27 +104,39 @@ string Player::getCities() {
 			city.append(c);
 		return city;
 	}
+string Player::getColor() {
+	
+	cout << "Players house color is: ";
+	cout<< getHouseColorName(color);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 int main() {
 
-	std::cout << "hi";
+	Player player1(BLACK);
+
+	std::cout << "Player 1 has been created with house color black\n\n";
+
+
+
+
+
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

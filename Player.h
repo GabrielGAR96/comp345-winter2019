@@ -4,7 +4,9 @@
 #include"House.h"
 #include"Resource.h"
 #include"Cards.h"
-#include <vector>
+#include<vector>
+#include "HouseColor.h"
+#include "PowerplantCard.h"
 //#include "City.h"
 
 class Player {
@@ -13,9 +15,9 @@ class Player {
 	private:
 
 		
-		vector <string> cities;
-		Card cardArray[3];
-		House house;
+		vector<string> cities;
+		PowerplantCard cardArray[3];
+		HouseColor color;
 		int cardCounter;
 		Resource resources;
 		int money;
@@ -23,13 +25,13 @@ class Player {
 	public:
 
 		Player();
-		Player(string color);
+		Player(HouseColor color);
 		~Player();
 
 		//method to choose a card on the board and set it for auction
-		void auctionCard(Card card);
+		void auctionCard(PowerplantCard card, int value);
 		//method to purchase card
-		void purchaseCard(Card card);
+		void purchaseCard(PowerplantCard card, int value);
 		//method to get cards
 		string getCards();
 		//determines score from owned cards 
@@ -41,7 +43,7 @@ class Player {
 		//geter for $$
 		int getMoney();
 		//buys resource and stores it in card
-		void buyResource(Card card, Resource resources, int amount, int price);
+		void buyResource(PowerplantCard card, Resource resources, int amount, int price);
 		//gets resources from cards 
 		string getResources();
 		//adds city name in vector 
@@ -50,7 +52,7 @@ class Player {
 		string getCities();
 		//returns the number of cities currently owned
 		int getNumCities();
-
+		string getColor();
 
 
 
