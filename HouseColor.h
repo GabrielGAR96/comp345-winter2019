@@ -10,18 +10,54 @@
 
 using std::string;
 
-
-class HouseColor {
-private:
-    string name;
-    string image;
-
-public:
-    HouseColor() {};
-    HouseColor(string name, string image);
-    string getName() const { return name; };
-    string getImage() const { return image; };
-    ~HouseColor();
+enum HouseColor
+{
+    BLACK, BLUE, RED, YELLOW, GREEN, PURPLE
 };
+
+namespace hc
+{
+    const int total = 6;
+}
+
+inline HouseColor getHouseColorByName(string name)
+{
+    HouseColor houseColor = BLACK; //default
+
+    if (name == "black")
+        houseColor = BLACK;
+    else if (name == "blue")
+        houseColor = BLUE;
+    else if (name == "red")
+        houseColor = RED;
+    else if (name == "yellow")
+        houseColor = YELLOW;
+    else if(name == "green")
+        houseColor = GREEN;
+    else if(name == "purple")
+        houseColor = PURPLE;
+
+    return houseColor;
+}
+
+inline string getHouseColorName (HouseColor houseColor) {
+    switch (houseColor) {
+        case BLACK:
+            return "black";
+        case BLUE:
+            return "blue";
+        case RED:
+            return "red";
+        case YELLOW:
+            return "yellow";
+        case GREEN:
+            return "green";
+        case PURPLE
+            return "purple";
+        default:
+            return "unknown";
+    }
+}
+
 
 #endif //POWERGRID_HOUSECOLOR_H
