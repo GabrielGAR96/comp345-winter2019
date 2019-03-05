@@ -8,7 +8,7 @@ int main() {
 
 	cout << "Player 1 has been created!" << endl;
 	cout << "COLOR:\n";
-	player1.getColor();
+	cout << player1.getColor();
 	cout << "\nCARDS:\n";
 	cout << player1.getCards() << endl;
 	cout << "\nELEKTRO\n";
@@ -20,7 +20,7 @@ int main() {
 	cout << "\n Adding a card to player...\n";
 	player1.purchaseCard(card, 17);
 	cout << "Buying resources for player..." << endl;
-	player1.buyResource(card, URANIUM, 1, 10);
+	player1.buyResource(0, URANIUM, 1, 10);
 
 	cout << "Player's new possessions:" << endl;
 	cout << "\nCARDS:\n";
@@ -29,8 +29,4 @@ int main() {
 	cout << "Player currently has: $" << player1.getMoney() << endl;
 	cout << "\nRESOURCES\n";
 	cout << player1.getResources() << endl;
-
-
-
-
 }

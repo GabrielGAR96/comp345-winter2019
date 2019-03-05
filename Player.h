@@ -42,7 +42,7 @@ class Player {
 		//geter for $$
 		int getMoney();
 		//buys resource and stores it in card
-		void buyResource(PowerplantCard card, Resource resources, int amount, int price);
+		void buyResource(int cardPosition, Resource resources, int amount, int price);
 		//gets resources from cards 
 		string getResources();
 		//adds city name in vector 
