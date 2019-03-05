@@ -39,11 +39,11 @@ void City::setRegion(int region)
     this->region = region;
 }
 
-bool City::build(Player player)
+bool City::build(House house)
 {
     if(numOccupants < 3) {
         buildingCost += 5;
-        houses[numOccupants++] = House(getHouseColorByName(player.getColor()));
+        houses[numOccupants++] = house;
         return true;
     }
     return false;

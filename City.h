@@ -8,7 +8,6 @@
 using namespace std;
 
 #include "House.h"
-#include "Player.h"
 
 class City;
 namespace std {
@@ -33,7 +32,7 @@ class City
         void setName(const string& name);
         int getRegion() const;
         void setRegion(const int region);
-        bool build(Player player);
+        bool build(House house);
         bool operator<(const City& rhs) const;
         bool operator==(const City& rhs) const;
 
