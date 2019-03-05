@@ -4,7 +4,7 @@
 
 #include "House.h"
 
-House::House(std::shared_ptr<HouseColor> color) :
-    color {color}{}
+House::House(HouseColor houseColor) : houseColor(houseColor) {}
 
 House::~House() {}
+
