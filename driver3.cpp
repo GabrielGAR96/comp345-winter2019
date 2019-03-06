@@ -19,7 +19,7 @@ void printMapToFile(Map& game, string fname);
 
 int main(int argc, char *argv[])
 {
-    string mapFile = "map2.txt";
+    string mapFile = "map.txt";
     Map* game = MapLoader::load(mapFile);
 
     string saveFile = "saved_map.txt";

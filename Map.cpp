@@ -9,6 +9,7 @@ using namespace std;
 #include "Elektro.h"
 #include "Map.h"
 #include "MapLoader.h"
+#include "Resource.h"
 
 Map::Map(UndirectedGraph<City> cities)
 {
