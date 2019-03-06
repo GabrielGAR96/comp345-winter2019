@@ -86,3 +86,9 @@ string Map::printMap() const
     mapText += "--BANK--";
     return mapText;
 }
+
+ostream& operator<<(ostream& out, const Map& m)
+{
+    out << m.powerGridMap;
+    return out;
+}

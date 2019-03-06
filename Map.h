@@ -27,6 +27,8 @@ class Map
         unordered_set<City> getCities() const;
         bool isValid() const;
         string printMap() const;
+
+    friend ostream& operator<<(ostream& out, const Map& m);
 };
 
 #endif

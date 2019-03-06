@@ -193,19 +193,16 @@ unordered_set<UndirectedEdge<T> > UndirectedGraph<T>::allEdges() const
 template<typename T>
 ostream& operator<<(ostream& out, const UndirectedGraph<T>& graph)
 {
-    out << "G = ({";
-    for(auto it = graph.verts.begin(); it != graph.verts.end(); it++) {
-        if(it != graph.verts.begin()) out << ", ";
-        out << *it;
+    out << "##Nodes##" << endl;
+    for(T v : graph.verts)
+    {
+        cout << v << " ";
     }
-    out << "}, {";
-    for(auto it = graph.edges.begin(); it != graph.edges.end(); it++) {
-        if(it != graph.edges.begin()) out << ", ";
-        out << "{";
-        out << it->source << ", " << it->dest << "(" << it->cost << ")";
-        out << "}";
+    out << endl << "##Edges##" << endl;
+    for(UndirectedEdge<T> edge : graph.edges)
+    {
+        cout << edge << endl;
     }
-    out << "})";
     return out;
 }
 
