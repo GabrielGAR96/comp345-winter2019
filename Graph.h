@@ -14,13 +14,16 @@ struct Edge {
     T source;
     T dest;
     double cost;
+    Edge() {}
     Edge(T source, T dest, double cost) : source(source), dest(dest), cost(cost) {}
+    virtual ~Edge() {}
 };
 
 template<typename T>
 struct UndirectedEdge : public Edge<T> {
     bool operator==(const UndirectedEdge<T>& rhs) const;
     /* friend ostream& operator<< <T> (ostream& out, const UndirectedEdge<T>& edge); */
+    UndirectedEdge() {}
     UndirectedEdge(T source, T dest, double cost) : Edge<T>(source, dest, cost) {}
 };
 
