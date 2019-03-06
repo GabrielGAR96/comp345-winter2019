@@ -6,19 +6,13 @@
 #define POWERGRID_RESOURCE_H
 
 #include <string>
-
 using std::string;
-
 
 enum Resource {
     COAL, OIL, GARBAGE, URANIUM
 };
 
-namespace res {
-    const int total = 4;
-}
-
-inline string getResourceName (Resource resource) {
+inline string getResourceName(Resource resource) {
     switch (resource) {
         case COAL:
             return "coal";
@@ -31,6 +25,15 @@ inline string getResourceName (Resource resource) {
         default:
             return "unknown";
     }
+}
+
+inline Resource getResourceByName(string r)
+{
+    if(r == "coal") return COAL;
+    if(r == "oil") return OIL;
+    if(r == "garbage") return GARBAGE;
+    if(r == "uranium") return URANIUM;
+    return COAL; // keep compiler happy
 }
 
 #endif //POWERGRID_RESOURCE_H

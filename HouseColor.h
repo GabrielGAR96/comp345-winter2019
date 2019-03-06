@@ -15,11 +15,6 @@ enum HouseColor
     BLACK, BLUE, RED, YELLOW, GREEN, PURPLE
 };
 
-namespace hc
-{
-    const int total = 6;
-}
-
 inline HouseColor getHouseColorByName(string name)
 {
     HouseColor houseColor = BLACK; //default
@@ -58,6 +53,5 @@ inline string getHouseColorName (HouseColor houseColor) {
             return "unknown";
     }
 }
-
 
 #endif //POWERGRID_HOUSECOLOR_H

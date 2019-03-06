@@ -44,7 +44,7 @@ string City::getHouses() const
     string result = "";
     for(int i = 0; i < numOccupants; i++)
     {
-        result.append("test");
+        result.append(getHouseColorName(houses[i].getHouseColor()) + ":");
     }
     return result;
 }

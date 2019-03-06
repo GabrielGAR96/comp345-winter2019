@@ -5,10 +5,10 @@
 #ifndef POWERGRID_HOUSE_H
 #define POWERGRID_HOUSE_H
 
-#pragma once
+#include <string>
+using namespace std;
 
 #include "HouseColor.h"
-#include <memory>
 
 class House{
 private:
@@ -20,9 +20,9 @@ public:
     House(HouseColor houseColor);
     ~House();
 
-    int getPrice() const {return price;}
-    HouseColor getHouseColorByName(string color) const;
-    void setPrice(int price) {this->price = price;}
+    int getPrice() const;
+    HouseColor getHouseColor() const;
+    void setPrice(int price);
 };
 
 #endif //POWERGRID_HOUSE_H
