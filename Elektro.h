@@ -1,6 +1,8 @@
 //
 // Created by Gabriel Albuquerque Ribeiro on 2019-02-18.
 //
+// This class simply implements the money (elektro) class and the elektro variable 
+// along with its getters and setters
 
 #ifndef POWERGRID_ELEKTRO_H
 #define POWERGRID_ELEKTRO_H
