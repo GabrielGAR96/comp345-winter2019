@@ -62,7 +62,11 @@ string PowerplantCard::getResources() const
 string PowerplantCard::info() const
 {
     string info = "";
+
+    // Put name on its own line
     info.append("#: " + to_string(name) + "\n");
+
+    // Only get useable resource types if a plant not ecological
     if(needed)
     {
         info.append("uses: ");
@@ -74,7 +78,9 @@ string PowerplantCard::info() const
     } else {
         info.append("ecological\n");
     }
-    // info.append("stored: " + getResources() + "\n");
+
+    // How many resources are needed to power and number of cities on their own
+    // lines
     info.append("req: " + to_string(needed) + "\n");
     info.append("cities: " + to_string(powerable));
 
@@ -96,6 +102,7 @@ bool PowerplantCard::isValidToStore(const Resource r) const
     return true;
 }
 
+// Names are unique so it suffices to check name:int for equality
 bool PowerplantCard::operator==(const PowerplantCard& rhs) const
 {
     return this->name == rhs.name;

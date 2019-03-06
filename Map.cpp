@@ -34,6 +34,9 @@ void Map::addResourceToMarket(Resource r)
 
 void Map::buyCity(City city, House house)
 {
+    // We Have to add a House but that means changing a vertex in the graph the
+    // stratgey is to just save the edges delete the vertex update it then
+    // readd the edges... Works but hacky
     vector<Edge<City> > edges = powerGridMap.getEdges(city);
     City current = powerGridMap.delVertex(city);
     current.build(house);
@@ -54,8 +57,12 @@ bool Map::isValid() const
     return Graph<City>::isConnected(powerGridMap);
 }
 
+// Conforms to the syntax in map.txt which is a human readable textfile
+// containing a portion of an actual Powergrid map
+// TODO: Could implement better serialization here and in MapLoader.cpp
 string Map::printMap() const
 {
+    // Sections need to be in proper order (see order of sentinal below)
     string mapText = "";
     mapText += "--CITIES--\n";
     unordered_set<City> cities = powerGridMap.getVerts();

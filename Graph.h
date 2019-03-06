@@ -22,6 +22,8 @@ using namespace std;
 
 // Simple edge container for use in adjacency list graph implementations
 // This is barebones and provides no checks on edge equality
+// NOTE: Due to implementation below lots of duplication of stored data...
+// Consider using pointers for source and dest
 template<typename T>
 struct Edge {
     // One end vertex

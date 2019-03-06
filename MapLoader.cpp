@@ -19,9 +19,13 @@ Map* MapLoader::load(string& fname)
     string sentinal;
     string infoLine;
 
+    // Read fname under the assumption that it has the correct format
+    // If not then always return null as indication that Map could not be loaded
     if(input.eof()) return nullptr;
     input >> sentinal;
     if(sentinal != "--CITIES--") return nullptr;
+    
+    // Collect cities for vertex population and later edge creation
     unordered_map<string, City> cities;
     while(input >> infoLine)
     {
@@ -36,6 +40,7 @@ Map* MapLoader::load(string& fname)
         cities.insert({name, city});
     }
 
+    // Collect information about edges
     if(input.eof()) return nullptr;
     input >> sentinal;
     if(sentinal != "--CONNECTIONS--") return nullptr;
@@ -53,11 +58,15 @@ Map* MapLoader::load(string& fname)
         graph.addEdge(cities[source], cities[dest], cost);
     }
 
+    // We know enough to make the Powergrid
     Map* powerGrid = new Map(graph);
 
+    // Collect the information about other game areas
     input >> sentinal;
     if(sentinal != "--MARKET--")
     {
+        // powerGrid is a pointer if we don't plan on using it we should delete
+        // it here
         delete powerGrid;
         return nullptr;
     }
@@ -91,12 +100,3 @@ Map* MapLoader::load(string& fname)
     input.close();
     return powerGrid;
 }
-
-/* Resource getResourceByName(string r) */
-/* { */
-/*     if(r == "coal") return COAL; */
-/*     if(r == "oil") return OIL; */
-/*     if(r == "garbage") return GARBAGE; */
-/*     if(r == "uranium") return URANIUM; */
-/*     return COAL; // keep compiler happy */
-/* } */

@@ -12,6 +12,8 @@ using namespace std;
 class PowerplantCard : public Card
 {
     private:
+        // Data members
+
         int name;
         int powerable;
         int needed;
@@ -19,16 +21,31 @@ class PowerplantCard : public Card
         Resource resourceTypes[2];
         int resourceTypesSize = 0;
         vector<Resource> resources;
+
+        // Helper Functions
+
+        // Powerplants can only store certain kinds of resources and specific
+        // amounts of them we need. This validates these contraints
         bool isValidToStore(const Resource r) const;
     public:
+        // Constructors
+
         PowerplantCard();
+        // Ecological
         PowerplantCard(int name, int powerable, int needed);
+        // One resource card
         PowerplantCard(int name, int powerable, int needed, Resource first);
+        // Two resource card
         PowerplantCard(int name, int powerable, int needed, Resource first, Resource second);
+
+        // Accessors and mutators
+
         int getName() const;
         int getPowerable() const;
         bool store(const Resource r);
         string getResources() const;
+
+        // toString() like method
         string info() const;
 
         bool operator==(const PowerplantCard& rhs) const;
