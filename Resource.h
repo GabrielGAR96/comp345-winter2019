@@ -12,7 +12,7 @@ enum Resource {
     COAL, OIL, GARBAGE, URANIUM //restrict the value of the resource to one of those four
 };
 
-inline string getResourceName(Resource resource) { //get the string equivalent to the resource
+inline string getResourceName(Resource resource) { //function that gets the string equivalent to the resource
     switch (resource) {
         case COAL:
             return "coal";
@@ -27,7 +27,7 @@ inline string getResourceName(Resource resource) { //get the string equivalent t
     }
 }
 
-inline Resource getResourceByName(string r) //accessing the resource through a string
+inline Resource getResourceByName(string r) //function that gets the resource through a string
 {
     if(r == "coal") return COAL;
     if(r == "oil") return OIL;
