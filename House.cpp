@@ -3,10 +3,9 @@
 //
 
 #include "House.h"
+#include "HouseColor.h"
 
-House::House()
-{
-}
+House::House() {}
 
 House::House(HouseColor houseColor) : houseColor(houseColor) {}
 

@@ -4,13 +4,12 @@
 #include <string>
 using namespace std;
 
-#include "City.h"
-#include "Graph.h"
+#include "Map.h"
 
 class MapLoader
 {
     public:
-        static UndirectedGraph<City>* load(string& fname);
+        static Map* load(string& fname);
 };
 
 #endif

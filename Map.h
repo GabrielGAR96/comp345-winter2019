@@ -24,7 +24,8 @@ class Map
         void addResourceToPool(Resource r);
         void addResourceToMarket(Resource r);
         void buyCity(City city, House house);
-        void printMap() const;
+        unordered_set<City> getCities() const;
+        string printMap() const;
 };
 
 #endif

@@ -2,20 +2,26 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <string>
+#include <vector>
 using namespace std;
 
 #include "MapLoader.h"
-#include "City.h"
-#include "Graph.h"
+#include "Map.h"
+#include "Resource.h"
 
-UndirectedGraph<City>* MapLoader::load(string& fname)
+/* Resource getResourceByName(string r); */
+
+Map* MapLoader::load(string& fname)
 {
-    UndirectedGraph<City>* map = new UndirectedGraph<City>();
+    UndirectedGraph<City> graph;
     ifstream input;
     input.open(fname);
     string sentinal;
     string infoLine;
+
+    if(input.eof()) return nullptr;
     input >> sentinal;
+    if(sentinal != "--CITIES--") return nullptr;
     unordered_map<string, City> cities;
     while(input >> infoLine)
     {
@@ -26,10 +32,13 @@ UndirectedGraph<City>* MapLoader::load(string& fname)
         start = end + 1;
         int region = stoi(infoLine.substr(start));
         City city(name, region);
-        map->addVertex(city);
+        graph.addVertex(city);
         cities.insert({name, city});
     }
+
+    if(input.eof()) return nullptr;
     input >> sentinal;
+    if(sentinal != "--CONNECTIONS--") return nullptr;
     while(input >> infoLine)
     {
         if(infoLine == sentinal) break;
@@ -41,8 +50,60 @@ UndirectedGraph<City>* MapLoader::load(string& fname)
         string dest = infoLine.substr(start, end - start);
         start = end + 1;
         int cost = stoi(infoLine.substr(start));
-        map->addEdge(cities[source], cities[dest], cost);
+        graph.addEdge(cities[source], cities[dest], cost);
     }
+
+    Map* powerGrid = new Map(graph);
+
+    // if(!input.eof())
+    // {
+    //     input >> sentinal;
+    //     if(sentinal != "--MARKET--")
+    //     {
+    //         delete powerGrid;
+    //         return nullptr;
+    //     }
+    //     while(input >> infoLine)
+    //     {
+    //         powerGrid->addResourceToMarket(getResourceByName(infoLine));
+    //     }
+    // }
+
+    // if(!input.eof())
+    // {
+    //     input >> sentinal;
+    //     if(sentinal != "--POOL--")
+    //     {
+    //         delete powerGrid;
+    //         return nullptr;
+    //     }
+    //     while(input >> infoLine)
+    //     {
+    //         powerGrid->addResourceToPool(getResourceByName(infoLine));
+    //     }
+    // }
+
+    // if(!input.eof())
+    // {
+    //     input >> sentinal;
+    //     if(sentinal != "--BANK--")
+    //     {
+    //         delete powerGrid;
+    //         return nullptr;
+    //     }
+    //     input >> infoLine;
+    //     powerGrid->addElektroToBank(stoi(infoLine));
+    // }
+
     input.close();
-    return map;
+    return powerGrid;
 }
+
+/* Resource getResourceByName(string r) */
+/* { */
+/*     if(r == "coal") return COAL; */
+/*     if(r == "oil") return OIL; */
+/*     if(r == "garbage") return GARBAGE; */
+/*     if(r == "uranium") return URANIUM; */
+/*     return COAL; // keep compiler happy */
+/* } */
