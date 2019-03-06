@@ -9,10 +9,10 @@
 using std::string;
 
 enum Resource {
-    COAL, OIL, GARBAGE, URANIUM
+    COAL, OIL, GARBAGE, URANIUM //restrict the value of the resource to one of those four
 };
 
-inline string getResourceName(Resource resource) {
+inline string getResourceName(Resource resource) { 
     switch (resource) {
         case COAL:
             return "coal";
@@ -27,7 +27,7 @@ inline string getResourceName(Resource resource) {
     }
 }
 
-inline Resource getResourceByName(string r)
+inline Resource getResourceByName(string r) //accessing the resource through a string
 {
     if(r == "coal") return COAL;
     if(r == "oil") return OIL;
