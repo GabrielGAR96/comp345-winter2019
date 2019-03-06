@@ -35,6 +35,8 @@ int City::getRegion() const
 
 void City::setRegion(int region)
 {
+    // There are a maximum of 6 regions on a map
+    // TODO: Make this more robust (maybe return bool)
     if(region < 1 || region > 6) return;
     this->region = region;
 }
@@ -42,8 +44,10 @@ void City::setRegion(int region)
 string City::getHouses() const
 {
     string result = "";
+    // Loop over all Houses and append them to result
     for(int i = 0; i < numOccupants; i++)
     {
+        // functions defined in Resource.h and House.h
         result.append(getHouseColorName(houses[i].getHouseColor()) + ":");
     }
     return result;
@@ -51,14 +55,19 @@ string City::getHouses() const
 
 bool City::build(House house)
 {
+    // Only build if there are less than 3 occupants currently
+    // Increase buildingCost by 5 when a House is built
     if(numOccupants < 3) {
         buildingCost += 5;
         houses[numOccupants++] = house;
         return true;
     }
+    // Let us know if we can even do this if not we can indicate in caller
     return false;
 }
 
+// City objects with the same name are equal
+// Region doesn't matter as all names are unique
 bool City::operator<(const City & rhs) const
 {
     return this->name < rhs.name;
@@ -76,6 +85,7 @@ ostream& operator<<(ostream& out, const City & rhs)
     return out;
 }
 
+// Hash objects by there name
 namespace std {
     size_t hash<City>::operator()(const City & city) const
     {
