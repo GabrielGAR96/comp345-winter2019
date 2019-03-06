@@ -12,10 +12,10 @@ using std::string;
 
 enum HouseColor
 {
-    BLACK, BLUE, RED, YELLOW, GREEN, PURPLE
+    BLACK, BLUE, RED, YELLOW, GREEN, PURPLE //restrict the value of the house color to one of those six
 };
 
-inline HouseColor getHouseColorByName(string name)
+inline HouseColor getHouseColorByName(string name) //function to get the house color by a string
 {
     HouseColor houseColor = BLACK; //default
 
@@ -35,7 +35,7 @@ inline HouseColor getHouseColorByName(string name)
     return houseColor;
 }
 
-inline string getHouseColorName (HouseColor houseColor) {
+inline string getHouseColorName (HouseColor houseColor) { //function to get the string equivalent to the house color
     switch (houseColor) {
         case BLACK:
             return "black";
