@@ -58,3 +58,12 @@ Magdeburg:Berlin:10
 Berlin:Torgelow:15
 Berlin:Frankfurt-O:6
 --CONNECTIONS--
+
+--MARKET--
+--MARKET--
+
+--POOL--
+--POOL--
+
+--BANK--
+--BANK--

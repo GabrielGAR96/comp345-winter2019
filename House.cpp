@@ -15,5 +15,5 @@ House::House(HouseColor houseColor) : houseColor(houseColor) {}
 House::~House() {}
 
 int House::getPrice() const {return price;}
-HouseColor getHouseColor() const {return houseColor;}
+HouseColor House::getHouseColor() const {return houseColor;}
 void House::setPrice(int price) {this->price = price;}

@@ -48,6 +48,11 @@ unordered_set<City> Map::getCities() const
     return powerGridMap.getVerts();
 }
 
+bool Map::isValid() const
+{
+    return Graph<City>::isConnected(powerGridMap);
+}
+
 string Map::printMap() const
 {
     string mapText = "";

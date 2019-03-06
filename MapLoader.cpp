@@ -55,45 +55,38 @@ Map* MapLoader::load(string& fname)
 
     Map* powerGrid = new Map(graph);
 
-    // if(!input.eof())
-    // {
-    //     input >> sentinal;
-    //     if(sentinal != "--MARKET--")
-    //     {
-    //         delete powerGrid;
-    //         return nullptr;
-    //     }
-    //     while(input >> infoLine)
-    //     {
-    //         powerGrid->addResourceToMarket(getResourceByName(infoLine));
-    //     }
-    // }
+    input >> sentinal;
+    if(sentinal != "--MARKET--")
+    {
+        delete powerGrid;
+        return nullptr;
+    }
+    while(input >> infoLine)
+    {
+        if(infoLine == sentinal) break;
+        powerGrid->addResourceToMarket(getResourceByName(infoLine));
+    }
 
-    // if(!input.eof())
-    // {
-    //     input >> sentinal;
-    //     if(sentinal != "--POOL--")
-    //     {
-    //         delete powerGrid;
-    //         return nullptr;
-    //     }
-    //     while(input >> infoLine)
-    //     {
-    //         powerGrid->addResourceToPool(getResourceByName(infoLine));
-    //     }
-    // }
+    input >> sentinal;
+    if(sentinal != "--POOL--")
+    {
+        delete powerGrid;
+        return nullptr;
+    }
+    while(input >> infoLine)
+    {
+        if(infoLine == sentinal) break;
+        powerGrid->addResourceToPool(getResourceByName(infoLine));
+    }
 
-    // if(!input.eof())
-    // {
-    //     input >> sentinal;
-    //     if(sentinal != "--BANK--")
-    //     {
-    //         delete powerGrid;
-    //         return nullptr;
-    //     }
-    //     input >> infoLine;
-    //     powerGrid->addElektroToBank(stoi(infoLine));
-    // }
+    input >> sentinal;
+    if(sentinal != "--BANK--")
+    {
+        delete powerGrid;
+        return nullptr;
+    }
+    input >> infoLine;
+    if(infoLine != sentinal) powerGrid->addElektroToBank(stoi(infoLine));
 
     input.close();
     return powerGrid;

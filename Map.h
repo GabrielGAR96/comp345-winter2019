@@ -25,6 +25,7 @@ class Map
         void addResourceToMarket(Resource r);
         void buyCity(City city, House house);
         unordered_set<City> getCities() const;
+        bool isValid() const;
         string printMap() const;
 };
 

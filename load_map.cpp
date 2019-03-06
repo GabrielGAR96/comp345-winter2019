@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     if(g == nullptr) {
         cout << "Invalid map" << endl;
     } else {
-        g->printMap();
-        cout << endl;
+        cout << g->printMap() << endl;
+        cout << (g->isValid() ? "valid connected map file" : "well formatted but disconnected") << endl;
     }
     delete g;
     return 0;
