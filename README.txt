@@ -1,6 +1,6 @@
 NOTES:
-- This Assignment was completed by Jeremie Izzo (40016103), Gabriel Ribeiro and Michael
-  Wilgus (29206388).
+- This Assignment was completed by Jeremie Izzo (40016103), Gabriel Ribeiro
+  (40105717) and Michael Wilgus (29206388).
 
 - Code is documented with comments.
 
