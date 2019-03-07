@@ -9,6 +9,8 @@ using namespace std;
 class SummaryCard : public Card
 {
     private:
+        // Data members
+
         const string TURN = "1. DETERMINE TURN ORDER\n"
                             "2. BUY POWER PLANT\n"
                             "   The first player begins.\n"
@@ -27,7 +29,11 @@ class SummaryCard : public Card
                                 90, 98, 105, 112, 118, 124, 129,
                                 134, 138, 142, 145, 148, 150};
     public:
+        // Constructors
+
         SummaryCard();
+
+        // Simple toString() like method
         string info() const;
 };
 

@@ -9,7 +9,11 @@ using namespace std;
 class Step3Card : public Card
 {
     public:
+        // Constructors
+
         Step3Card();
+
+        // Simple toString() like method
         string info() const;
 };
 

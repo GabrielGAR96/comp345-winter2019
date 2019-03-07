@@ -7,6 +7,11 @@ SummaryCard::SummaryCard()
 {
 }
 
+// Display the information exactly as presented on the summary card from the
+// physical game in the format:
+// <Front info with rules>
+//
+// <Back info with monetary rewards>
 string SummaryCard::info() const
 {
     string info = "";

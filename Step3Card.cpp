@@ -8,6 +8,8 @@ Step3Card::Step3Card()
 {
 }
 
+// The only purpose of this card is to signal the third step of the game when it
+// is drawn
 string Step3Card::info() const
 {
     return "STEP 3";

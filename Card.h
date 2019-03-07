@@ -4,6 +4,13 @@
 #include <string>
 using namespace std;
 
+/* NOTE: All the card definitions should be here but I was thinking like a Java
+ * programmer
+ *
+ * TODO: For Assignment 2 some minimal refactoring can reduce the number of
+ * objects created and used as dependency if the above note is dealt with
+ */
+
 // So we can check easily for step 3 card... Other values for completeness
 enum class CardType {POWERPLANT, SUMMARY, STEP3};
 
