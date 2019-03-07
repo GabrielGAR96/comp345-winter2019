@@ -5,6 +5,8 @@
 #include <string>
 using namespace std;
 
+#include <boost/serialization/access>
+
 #include "Graph.h"
 #include "Resource.h"
 #include "City.h"
