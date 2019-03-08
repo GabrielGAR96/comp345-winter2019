@@ -9,6 +9,9 @@
 #include <functional>
 using namespace std;
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 /* NOTE: I tried to research how to separate definition from implementation for
  * template classes. Any solution I found was either beyond my understanding or
  * in someway unsatisfactory.
@@ -68,6 +71,19 @@ bool UndirectedEdge<T>::operator==(const UndirectedEdge<T>& rhs) const
         this->cost == rhs.cost;
 }
 
+namespace boost {
+namespace serialization {
+
+    template<typename Archive, typename T>
+    void serialize(Archive & ar, UndirectedEdge<T> edge, const unsigned int version)
+    {
+        ar & edge.source;
+        ar & edge.dest;
+        ar & edge.dest;
+    }
+}
+}
+
 // Specialization of hash<> so we can put edges in a hashset
 namespace std {
     template<typename T> struct hash<UndirectedEdge<T> > {
@@ -95,6 +111,16 @@ class Graph
         // Data members
         unordered_set<T> verts;
         unordered_map<T, vector<Edge<T> > > adjList;
+
+    private:
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & edges;
+        }
+
     public:
 
         // Constructors
@@ -225,6 +251,13 @@ class UndirectedGraph : public Graph<T>
     private:
         // Data members
         unordered_set<UndirectedEdge<T> > edges;
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & edges;
+        }
     public:
         // Constructors
 

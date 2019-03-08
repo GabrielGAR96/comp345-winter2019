@@ -6,6 +6,8 @@
 #include <vector>
 using namespace std;
 
+#include <boost/archive/text_oarchive.hpp>
+
 #include "MapLoader.h"
 #include "Map.h"
 #include "Resource.h"
@@ -50,6 +52,15 @@ int main(int argc, char *argv[])
     buyCity(city, house, *game, saveFile);
     cout << "Gave a purple house to 1 city" << endl;
     cout << "See " << saveFile << " to see these results" << endl;
+
+    string other_file = "other_file.txt";
+    ofstream out(other_file);
+
+    {
+        boost::archive::text_oarchive oa(out);
+        oa << *game;
+    }
+
 
     // Cleanup
     delete game;

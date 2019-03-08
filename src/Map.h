@@ -5,7 +5,8 @@
 #include <string>
 using namespace std;
 
-#include <boost/serialization/access>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 #include "Graph.h"
 #include "Resource.h"
@@ -22,6 +23,17 @@ class Map
         Resource resourceMarket[14];
         int marketSize = 0;
         Elektro bank = 0;
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & powerGridMap;
+            ar & resourcePool;
+            ar & resourceMarket[14];
+            ar & marketSize;
+            ar & bank;
+        }
     public:
         // Constructors
 
