@@ -16,15 +16,15 @@ enum Resource {
 };
 
 namespace boost {
-namespace serialization {
+    namespace serialization {
 
-template<typename Archive>
-void serialize(Archive & ar, Resource & r, const unsigned int version)
-{
-    ar & r;
-}
+        template<typename Archive>
+        void serialize(Archive & ar, Resource & r, const unsigned int version)
+        {
+            ar & r;
+        }
 
-}
+    }
 }
 
 inline string getResourceName(Resource resource) { //function that gets the string equivalent to the resource

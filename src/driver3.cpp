@@ -61,6 +61,15 @@ int main(int argc, char *argv[])
         oa << *game;
     }
 
+    Map newMap;
+    ifstream input(other_file);
+
+    {
+        boost::archive::text_iarchive ia(input);
+        ia >> newMap;
+    }
+
+    cout << newMap.printMap();
 
     // Cleanup
     delete game;

@@ -1,12 +1,15 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <vector>
+/* #include <vector> */
 #include <string>
 using namespace std;
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+
+#include <boost/serialization/vector.hpp>
+/* using namespace boost::serialization; */
 
 #include "Graph.h"
 #include "Resource.h"
@@ -30,13 +33,14 @@ class Map
         {
             ar & powerGridMap;
             ar & resourcePool;
-            ar & resourceMarket[14];
+            ar & resourceMarket;
             ar & marketSize;
             ar & bank;
         }
     public:
         // Constructors
 
+        Map();
         Map(UndirectedGraph<City> cities);
 
         // A map includes markets and pools we need to add tokens to these

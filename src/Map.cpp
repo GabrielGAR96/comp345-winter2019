@@ -11,6 +11,10 @@ using namespace std;
 #include "MapLoader.h"
 #include "Resource.h"
 
+Map::Map()
+{
+}
+
 Map::Map(UndirectedGraph<City> cities)
 {
     powerGridMap = cities;
