@@ -10,7 +10,7 @@ using namespace std;
 #include"Card.h"
 #include "HouseColor.h"
 #include "PowerplantCard.h"
-
+#include "Resource.h"
 class Player {
     private:
         vector<string> cities;
@@ -18,12 +18,28 @@ class Player {
         HouseColor color;
         int cardCounter;
         int money;
+
+
+        int oilNum=0;
+        int garbageNum=0;
+        int uraniumNum=0;
+        int coalNum=0;
+
+        std::vector<Resource> garbage;
+        std::vector<Resource> uranium;
+        std::vector<Resource> oil;
+        std::vector<Resource> coal;
     public:
 
         Player();
         Player(HouseColor color);
         ~Player();
-
+        void gettotalresources();
+        int getOil();
+        int getGarbage();
+        int getUranium();
+        int getCoal();
+        void getTotResources();
         //method to choose a card on the board and set it for auction
         void auctionCard(PowerplantCard card, int value);
         //method to purchase card
@@ -48,8 +64,15 @@ class Player {
         string getCities();
         //returns the number of cities currently owned
         int getNumCities();
+
         string getColor();
+
         void toString();
+
+        int powerCard();
+
+        int powerableHouses();
+        void addResource(Resource resource);
 };
 
 #endif
