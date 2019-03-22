@@ -47,13 +47,20 @@ bool PowerplantCard::store(const Resource r)
     currentStored++;
     return true;
 }
-
-string PowerplantCard::getResources() const
+string PowerplantCard::getResource1(){
+  return getResourceName(resourceTypes[0]);
+}
+string PowerplantCard::getResource2(){
+  return getResourceName(resourceTypes[1]);
+}
+string PowerplantCard::getResources()
 {
+
     string res = "";
-    for(Resource r : resources)
+    for(int i=0;i<resourceTypesSize;i++)
     {
-        res.append(getResourceName(r) + " ");
+        res.append(getResourceName(resourceTypes[i])+ " ");
+
     }
 
     return res;
@@ -103,13 +110,22 @@ bool PowerplantCard::isValidToStore(const Resource r) const
 }
 
 // Names are unique so it suffices to check name:int for equality
-bool PowerplantCard::operator==(const PowerplantCard& rhs) const
-{
-    return this->name == rhs.name;
+// bool PowerplantCard::operator==(const PowerplantCard& rhs) const
+// {
+//   return this->name == rhs.name;
+// }
+//
+// ostream& operator<<(ostream& out, const PowerplantCard& c)
+// {
+//     out << c.info();
+//     return out;
+// }
+int PowerplantCard::getNeeded(){
+  return this->needed;
 }
-
-ostream& operator<<(ostream& out, const PowerplantCard& c)
-{
-    out << c.info();
-    return out;
+int PowerplantCard::getCurrentStored(){
+  return this->currentStored;
+}
+int PowerplantCard::getResourceTypeSize(){
+  return resourceTypesSize;
 }

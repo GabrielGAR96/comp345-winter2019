@@ -21,7 +21,6 @@ class PowerplantCard : public Card
         Resource resourceTypes[2];
         int resourceTypesSize = 0;
         vector<Resource> resources;
-
         // Helper Functions
 
         // Powerplants can only store certain kinds of resources and specific
@@ -43,14 +42,22 @@ class PowerplantCard : public Card
         int getName() const;
         int getPowerable() const;
         bool store(const Resource r);
-        string getResources() const;
-
+        string getResources();
+        string getResource1();
+        string getResource2();
         // toString() like method
         string info() const;
+        int getNeeded();
+        int getCurrentStored();
+        int getResourceTypeSize();
 
-        bool operator==(const PowerplantCard& rhs) const;
 
-    friend ostream& operator<<(ostream& out, const PowerplantCard& c);
+
+        //bool operator==(const PowerplantCard& rhs) const;
+        //friend string Player::getNameFromP();
+        //friend ostream& operator<<(ostream& out, const PowerplantCard& c);
+
+
 };
 
 #endif

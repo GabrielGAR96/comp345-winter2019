@@ -46,6 +46,7 @@ class Player {
         void purchaseCard(PowerplantCard card, int value);
         //method to get cards
         string getCards();
+        PowerplantCard getCard(int position);
         //determines score from owned cards
         int getScore();
         //chooses resources to buy
@@ -70,6 +71,8 @@ class Player {
         void toString();
 
         int powerCard();
+
+        int getCardCounter();
 
         int powerableHouses();
         void addResource(Resource resource);

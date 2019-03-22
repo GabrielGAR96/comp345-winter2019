@@ -38,19 +38,19 @@ inline HouseColor getHouseColorByName(string name) //function to get the house c
 inline string getHouseColorName (HouseColor houseColor) { //function to get the string equivalent to the house color
     switch (houseColor) {
         case BLACK:
-            return "black";
+            return "BLACK";
         case BLUE:
-            return "blue";
+            return "BLUE";
         case RED:
-            return "red";
+            return "RED";
         case YELLOW:
-            return "yellow";
+            return "YELLOW";
         case GREEN:
-            return "green";
+            return "GREEN";
         case PURPLE:
-            return "purple";
+            return "PURPLE";
         default:
-            return "unknown";
+            return "UNKNOWN";
     }
 }
 

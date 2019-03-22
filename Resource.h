@@ -15,13 +15,13 @@ enum Resource {
 inline string getResourceName(Resource resource) { //function that gets the string equivalent to the resource
     switch (resource) {
         case COAL:
-            return "coal";
+            return "COAL";
         case OIL:
-            return "oil";
+            return "OIL";
         case GARBAGE:
-            return "garbage";
+            return "GARBAGE";
         case URANIUM:
-            return "uranium";
+            return "URANIUM";
         default:
             return "unknown";
     }
@@ -29,11 +29,11 @@ inline string getResourceName(Resource resource) { //function that gets the stri
 
 inline Resource getResourceByName(string r) //function that gets the resource through a string
 {
-    if(r == "coal") return COAL;
-    if(r == "oil") return OIL;
-    if(r == "garbage") return GARBAGE;
-    if(r == "uranium") return URANIUM;
-    return COAL; // keep compiler happy
+    if(r == "COAL") return COAL;
+    if(r == "OIL") return OIL;
+    if(r == "GARBAGE") return GARBAGE;
+    if(r == "URANIUM") return URANIUM;
+     // keep compiler happy
 }
 
 #endif //POWERGRID_RESOURCE_H

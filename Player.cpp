@@ -47,8 +47,9 @@ void Player::auctionCard(PowerplantCard card, int value) {
 
 //buy a card and places in card array, if player already has 3 cards it will ask to swap for one
 void Player::purchaseCard(PowerplantCard card, int value) {
+    int position = cardCounter;
     if (cardCounter == 3) {
-        int position;
+
         cout << "What card would you like to swap with?" << endl;
         cout << "Press 1 for " << cardArray[0].getName();
         cout << "\nPress 2 for " << cardArray[1].getName();
@@ -62,15 +63,16 @@ void Player::purchaseCard(PowerplantCard card, int value) {
         }
     }
     money = money - value;
-    cardArray[cardCounter] = card;
-    cardCounter++;
+    cardArray[position] = card;
+    if(!(cardCounter==3))
+      cardCounter++;
 }
 
 //outputs the players current cards
 string Player::getCards() {
     string myCards = "";
     for (int i = 0; i < cardCounter; i++) {
-        myCards.append(cardArray[i].info());
+      myCards.append(cardArray[i].info()+ "\n\n");
     }
 
     return myCards;
@@ -110,8 +112,10 @@ void Player::buyResource(int cardPosition, Resource resources, int amount, int p
         if(cardArray[cardPosition].store(resources)){
         this->money = money - price;
         addResource(resources);
-        }
       }
+
+
+}
 }
 
 
@@ -119,7 +123,8 @@ void Player::buyResource(int cardPosition, Resource resources, int amount, int p
 string Player::getResources() {
     string result = "";
     for (int i = 0; i < cardCounter; i++) {
-        result.append(cardArray[i].getResources() + " ");
+        result.append((i+1) + ". ");
+        result.append(cardArray[i].getResources() + "\n");
     }
     return result;
 }
@@ -168,8 +173,7 @@ void Player::addResource(Resource resource){
     coal.push_back(COAL);
     coalNum++;
     break;
-    default:
-    cout << "invalid";
+
   }
 }
 int Player::getOil(){
@@ -201,4 +205,10 @@ int Player::powerCard(){
   //cin>>card;
   //cardArray[card]
 return 0;
+}
+int Player:: getCardCounter(){
+  return cardCounter;
+}
+PowerplantCard Player::getCard(int position){
+  return cardArray[position];
 }
