@@ -8,11 +8,10 @@ using namespace std;
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
-#include <boost/serialization/vector.hpp>
-/* using namespace boost::serialization; */
-
 #include "Graph.h"
 #include "Resource.h"
+#include "ResourcePool.h"
+#include "ResourceMarket.h"
 #include "City.h"
 #include "Elektro.h"
 
@@ -22,9 +21,8 @@ class Map
         // Data members
 
         UndirectedGraph<City> powerGridMap;
-        vector<Resource> resourcePool;
-        Resource resourceMarket[14];
-        int marketSize = 0;
+        ResourcePool pool;
+        ResourceMarket market;
         Elektro bank = 0;
 
         friend class boost::serialization::access;
@@ -32,9 +30,8 @@ class Map
         void serialize(Archive & ar, const unsigned int version)
         {
             ar & powerGridMap;
-            ar & resourcePool;
-            ar & resourceMarket;
-            ar & marketSize;
+            ar & pool;
+            ar & market;
             ar & bank;
         }
     public:
@@ -46,8 +43,7 @@ class Map
         // A map includes markets and pools we need to add tokens to these
         // areas
         void addElektroToBank(int amount);
-        void addResourceToPool(Resource r);
-        void addResourceToMarket(Resource r);
+        void addResourceToPool(Resource r, int n);
 
         // We need to build Houses on cities
         // NOTE: Implementation might need some work

@@ -1,10 +1,11 @@
+#include <iostream>
+using namespace std;
+
 #include "ResourcePool.h"
 #include "Resource.h"
 
-ResourcePool::ResourcePool()
-{
-    ResourcePool(24, 24, 24, 12);
-}
+ResourcePool::ResourcePool() :
+    ResourcePool(24, 24, 24, 12) {}
 
 ResourcePool::ResourcePool(int coal, int oil, int garbage, int uranium)
 {
@@ -42,7 +43,7 @@ bool ResourcePool::getResourcesFromPool(Resource r, int n)
     return false;
 }
 
-int ResourcePool::getAvailable(Resource r)
+int ResourcePool::getAvailable(Resource r) const
 {
     switch(r)
     {
@@ -54,5 +55,25 @@ int ResourcePool::getAvailable(Resource r)
             return amountGarbage;
         case URANIUM:
             return amountUranium;
+    }
+    throw invalid_argument("No such resource " + getResourceName(r));
+}
+
+void ResourcePool::putBack(Resource r, int n)
+{
+    switch(r)
+    {
+        case COAL:
+            amountCoal += n;
+            break;
+        case OIL:
+            amountOil += n;
+            break;
+        case GARBAGE:
+            amountGarbage += n;
+            break;
+        case URANIUM:
+            amountUranium += n;
+            break;
     }
 }

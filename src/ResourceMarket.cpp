@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 using namespace std;
 
 #include "ResourceMarket.h"
@@ -29,7 +30,7 @@ const int ResourceMarket::RESTOCK_RULES[5][3][4] = {{{3, 2, 1, 1},  // Step 1
 ResourceMarket::ResourceMarket()
 {}
 
-ResourceMarket::ResourceMarket(ResourcePool pool)
+void ResourceMarket::initialize(ResourcePool& pool)
 {
     amountCoal = min(24, pool.getAvailable(COAL));
     amountOil = min(18, pool.getAvailable(OIL));
@@ -45,7 +46,7 @@ ResourceMarket::ResourceMarket(ResourcePool pool)
     pool.getResourcesFromPool(URANIUM, amountUranium);
 }
 
-int ResourceMarket::getCheapest(Resource r)
+int ResourceMarket::getCheapest(Resource r) const
 {
     switch(r)
     {
@@ -62,6 +63,7 @@ int ResourceMarket::getCheapest(Resource r)
                 return indexUranium + 2 + (indexUranium % 8);
             }
     }
+    throw invalid_argument("No such resource " + getResourceName(r));
 }
 
 Resource ResourceMarket::buy(Resource r)
@@ -93,10 +95,10 @@ Resource ResourceMarket::buy(Resource r)
                 return URANIUM;
             }
     }
-    throw exception();
+    throw invalid_argument("No such resource " + getResourceName(r));
 }
 
-void ResourceMarket::restock(ResourcePool pool, int numPlayers, int step)
+void ResourceMarket::restock(ResourcePool& pool, int numPlayers, int step)
 {
     int i = numPlayers - 2;
     int j = step - 1;
@@ -117,4 +119,20 @@ void ResourceMarket::restock(ResourcePool pool, int numPlayers, int step)
     pool.getResourcesFromPool(OIL, refillOil);
     pool.getResourcesFromPool(GARBAGE, refillGarbage);
     pool.getResourcesFromPool(URANIUM, refillUranium);
+}
+
+int ResourceMarket::getAmount(Resource r) const
+{
+    switch(r)
+    {
+        case COAL:
+            return amountCoal;
+        case OIL:
+            return amountOil;
+        case GARBAGE:
+            return amountGarbage;
+        case URANIUM:
+            return amountUranium;
+    }
+    throw invalid_argument("No such resource " + getResourceName(r));
 }
