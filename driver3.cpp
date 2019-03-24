@@ -6,6 +6,8 @@
 #include <vector>
 using namespace std;
 
+#include <boost/archive/text_oarchive.hpp>
+
 #include "MapLoader.h"
 #include "Map.h"
 #include "Resource.h"
@@ -14,8 +16,7 @@ using namespace std;
 
 // Wrappers around functions for Map class that also write to savefile
 // See: Map.h
-void addResourceToMarket(Resource r, Map& game, string fname);
-void addResourceToPool(Resource r, Map& game, string fname);
+void addResourceToPool(Resource r, int n, Map& game, string fname);
 void addElektroToBank(int amount, Map& game, string fname);
 void buyCity(City city, House house, Map& game, string fname);
 void printMapToFile(Map& game, string fname);
@@ -35,10 +36,8 @@ int main(int argc, char *argv[])
     string saveFile = "saved_map.txt";
 
     // Add tokens to Map
-    addResourceToPool(OIL, *game, saveFile);
+    addResourceToPool(OIL, 10, *game, saveFile);
     cout << "Saved an oil token to the market" << endl;
-    addResourceToMarket(COAL, *game, saveFile);
-    cout << "Saved a coal resource to the resource pool" << endl;
     addElektroToBank(100, *game, saveFile);
     cout << "Give the bank 100 Elektro" << endl;
 
@@ -51,21 +50,33 @@ int main(int argc, char *argv[])
     cout << "Gave a purple house to 1 city" << endl;
     cout << "See " << saveFile << " to see these results" << endl;
 
+    string other_file = "other_file.txt";
+    ofstream out(other_file);
+
+    {
+        boost::archive::text_oarchive oa(out);
+        oa << *game;
+    }
+
+    Map newMap;
+    ifstream input(other_file);
+
+    {
+        boost::archive::text_iarchive ia(input);
+        ia >> newMap;
+    }
+
+    cout << newMap.printMap();
+
     // Cleanup
     delete game;
 
     return 0;
 }
 
-void addResourceToMarket(Resource r, Map& game, string fname)
+void addResourceToPool(Resource r, int n, Map& game, string fname)
 {
-    game.addResourceToMarket(r);
-    printMapToFile(game, fname);
-}
-
-void addResourceToPool(Resource r, Map& game, string fname)
-{
-    game.addResourceToPool(r);
+    game.addResourceToPool(r, n);
     printMapToFile(game, fname);
 }
 

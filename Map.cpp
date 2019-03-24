@@ -11,9 +11,14 @@ using namespace std;
 #include "MapLoader.h"
 #include "Resource.h"
 
+Map::Map()
+{
+}
+
 Map::Map(UndirectedGraph<City> cities)
 {
     powerGridMap = cities;
+    market.initialize(pool);
 }
 
 void Map::addElektroToBank(int amount)
@@ -21,15 +26,9 @@ void Map::addElektroToBank(int amount)
     bank.setElektro(bank.getElektro() + amount);
 }
 
-void Map::addResourceToPool(Resource r)
+void Map::addResourceToPool(Resource r, int n)
 {
-    resourcePool.push_back(r);
-}
-
-void Map::addResourceToMarket(Resource r)
-{
-    if(marketSize == 14) return;
-    resourceMarket[marketSize++] = r;
+    pool.putBack(r, n);
 }
 
 void Map::buyCity(City city, House house)
@@ -78,16 +77,10 @@ string Map::printMap() const
     }
     mapText += "--CONNECTIONS--\n\n";
     mapText += "--MARKET--\n";
-    for(int i = 0; i < marketSize; i++)
-    {
-        mapText += getResourceName(resourceMarket[i]) + "\n";
-    }
+    mapText += "COAL: " + to_string(market.getAmount(COAL)) + " OIL: " + to_string(market.getAmount(OIL)) + " GARBAGE: " + to_string(market.getAmount(GARBAGE)) + " URANIUM: " + to_string(market.getAmount(URANIUM)) + "\n";
     mapText += "--MARKET--\n\n";
     mapText += "--POOL--\n";
-    for(Resource r : resourcePool)
-    {
-        mapText += getResourceName(r) + "\n";
-    }
+    mapText += "COAL: " + to_string(pool.getAvailable(COAL)) + " OIL: " + to_string(pool.getAvailable(OIL)) + " GARBAGE: " + to_string(pool.getAvailable(GARBAGE)) + " URANIUM: " + to_string(pool.getAvailable(URANIUM)) + "\n";
     mapText += "--POOL--\n\n";
     mapText += "--BANK--\n";
     mapText += to_string(bank.getElektro()) + "\n";

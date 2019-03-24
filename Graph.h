@@ -1,13 +1,21 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
+/* #include <unordered_set> */
+/* #include <unordered_map> */
+/* #include <vector> */
 #include <deque>
 #include <iostream>
 #include <functional>
 using namespace std;
+
+#include <boost/serialization/unordered_set.hpp>
+#include <boost/serialization/unordered_map.hpp>
+#include <boost/serialization/vector.hpp>
+using namespace boost::serialization;
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 /* NOTE: I tried to research how to separate definition from implementation for
  * template classes. Any solution I found was either beyond my understanding or
@@ -46,6 +54,19 @@ struct Edge {
     virtual ~Edge() {}
 };
 
+namespace boost {
+namespace serialization {
+
+    template<typename Archive, typename T>
+    void serialize(Archive & ar, Edge<T>& edge, const unsigned int version)
+    {
+        ar & edge.source;
+        ar & edge.dest;
+        ar & edge.cost;
+    }
+}
+}
+
 // Useful for Powergrid because source and dest are interchangeable
 template<typename T>
 struct UndirectedEdge : public Edge<T> {
@@ -66,6 +87,17 @@ bool UndirectedEdge<T>::operator==(const UndirectedEdge<T>& rhs) const
     return (this->source == rhs.source || this->source == rhs.dest) &&
         (this->dest == rhs.source || this->dest == rhs.dest) &&
         this->cost == rhs.cost;
+}
+
+namespace boost {
+namespace serialization {
+
+    template<typename Archive, typename T>
+    void serialize(Archive & ar, UndirectedEdge<T>& edge, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<Edge<T> >(edge);
+    }
+}
 }
 
 // Specialization of hash<> so we can put edges in a hashset
@@ -95,6 +127,17 @@ class Graph
         // Data members
         unordered_set<T> verts;
         unordered_map<T, vector<Edge<T> > > adjList;
+
+    private:
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & verts;
+            ar & adjList;
+        }
+
     public:
 
         // Constructors
@@ -225,6 +268,14 @@ class UndirectedGraph : public Graph<T>
     private:
         // Data members
         unordered_set<UndirectedEdge<T> > edges;
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & boost::serialization::base_object<Graph<T> >(*this);
+            ar & edges;
+        }
     public:
         // Constructors
 

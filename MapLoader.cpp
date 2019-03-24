@@ -73,7 +73,6 @@ Map* MapLoader::load(string& fname)
     while(input >> infoLine)
     {
         if(infoLine == sentinal) break;
-        powerGrid->addResourceToMarket(getResourceByName(infoLine));
     }
 
     input >> sentinal;
@@ -85,7 +84,7 @@ Map* MapLoader::load(string& fname)
     while(input >> infoLine)
     {
         if(infoLine == sentinal) break;
-        powerGrid->addResourceToPool(getResourceByName(infoLine));
+        powerGrid->addResourceToPool(getResourceByName(infoLine), 1);
     }
 
     input >> sentinal;
