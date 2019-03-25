@@ -158,22 +158,39 @@ void Player::addResource(Resource resource){
   switch(resource)
   {
     case(OIL):
-    oil.push_back(OIL);
+    oil.push_back(&resource);
     oilNum++;
     break;
     case(URANIUM):
-    uranium.push_back(URANIUM);
+    uranium.push_back(&resource);
     uraniumNum++;
     break;
     case(GARBAGE):
-    garbage.push_back(GARBAGE);
+    garbage.push_back(&resource);
     garbageNum++;
     break;
     case(COAL):
-    coal.push_back(COAL);
+    coal.push_back(&resource);
     coalNum++;
     break;
 
+  }
+}
+int Player::findNumResource(Resource resource){
+  switch(resource)
+  {
+    case(OIL):
+    return oilNum;
+    break;
+    case(URANIUM):
+    return uraniumNum;
+    break;
+    case(GARBAGE):
+    garbageNum;
+    break;
+    case(COAL):
+    coalNum;
+    break;
   }
 }
 int Player::getOil(){
@@ -209,6 +226,30 @@ return 0;
 int Player:: getCardCounter(){
   return cardCounter;
 }
-PowerplantCard Player::getCard(int position){
+PowerplantCard &Player::getCard(int position){
   return cardArray[position];
+}
+void Player::deleteResource(Resource resource){
+  switch(resource)
+  {
+    case(OIL):
+    oil.pop_back();
+    oilNum--;
+    break;
+    case(URANIUM):
+    uranium.pop_back();
+    uraniumNum--;
+    break;
+    case(GARBAGE):
+    garbage.pop_back();
+    garbageNum--;
+    break;
+    case(COAL):
+    coal.pop_back();
+    coalNum--;
+    break;
+  }
+}
+int Player::gettotstored(){
+  return oilNum + uraniumNum + garbageNum + coalNum;
 }
