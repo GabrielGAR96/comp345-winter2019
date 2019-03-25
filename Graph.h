@@ -328,7 +328,7 @@ bool UndirectedGraph<T>::addEdge(const T& u, const T& v, double cost)
     // accordingly
     if(edges.find(edge) != edges.end()) return false;
 
-    // Do the vertecies actuall exist?
+    // Do the vertecies actually exist?
     if(Graph<T>::verts.find(u) == Graph<T>::verts.end() || Graph<T>::verts.find(v) == Graph<T>::verts.end()) return false;
 
     // Do the insertion and return success

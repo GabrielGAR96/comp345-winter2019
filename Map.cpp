@@ -40,6 +40,16 @@ void Map::useRegion(int region)
     activeRegions.insert(region);
 }
 
+set<int> Map::getRegions() const
+{
+    return activeRegions;
+}
+
+void Map::clearRegions()
+{
+    activeRegions.clear();
+}
+
 bool Map::test()
 {
     UndirectedGraph<City> temp;

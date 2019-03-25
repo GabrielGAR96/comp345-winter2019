@@ -52,6 +52,8 @@ class Map
         void restockMarket(int numPlayers, int step);
 
         void useRegion(int region);
+        set<int> getRegions() const;
+        void clearRegions();
         bool test();
         void finalize();
 

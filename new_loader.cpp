@@ -32,39 +32,62 @@ int main(int argc, char *argv[])
 {
     map<int, string> files;
     readDirectory("./maps/", files);
-    cout << "Available maps:" << endl;
-    for(auto file : files)
-    {
-        cout << file.first << ". " << file.second << endl;
-    }
-    int selection;
-    cout << endl << "select by entering #: ";
-    cin >> selection;
-    string file = "./maps/" + files[selection];
-    cout << endl << "loading " << file << endl;
     Map* powergrid;
-    try {
-        powergrid = MapLoader2::load(file);
-    } catch(BadMap& ex) {
-        cout << ex.what() << endl;
-        cout << "Ending..." << endl;
-        return - 1;
-    }
+    bool loaded = false;
+    do {
+        cout << "Available maps:" << endl;
+        for(auto file : files)
+        {
+            cout << file.first << ". " << file.second << endl;
+        }
+        int selection;
+        cout << endl << "select by entering #: ";
+        cin >> selection;
+        string file = "./maps/" + files[selection];
+        cout << endl << "loading " << file << endl;
+        try {
+            powergrid = MapLoader2::load(file);
+            loaded = true;
+        } catch(BadMap& ex) {
+            cout << ex.what() << endl << endl;
+        }
+    } while(!loaded);
+    int numPlayers;
+    do {
+        cout << "How many players are there (2-6): ";
+        cin >> numPlayers;
+        if(numPlayers < 2 || numPlayers > 6) {
+            cout << "Invalid number of players (" << numPlayers << ") selected" << endl << endl;
+        }
+    } while(numPlayers < 2 || numPlayers > 6);
     int region;
-    int i = 1;
-    while(i < 3)
-    {
-        cout << "Player " << i << " select a region for play: ";
-        cin >> region;
-        powergrid->useRegion(region);
-        i++;
-    }
-    if(powergrid->test()) {
-        powergrid->finalize();
+    bool validRegionsSelected = false;
+    if(numPlayers < 6) {
+        do {
+            int i = 1;
+            powergrid->clearRegions();
+            while(i <= numPlayers)
+            {
+                cout << "Player " << i << " select a region for play: ";
+                cin >> region;
+                if(powergrid->getRegions().find(region) != powergrid->getRegions().end()) {
+                    powergrid->useRegion(region);
+                    i++;
+                } else {
+                    cout << "Region " << region << " has already been selected" << endl << endl;
+                }
+            }
+            validRegionsSelected = powergrid->test();
+            if(!validRegionsSelected) {
+                cout << "Selected regions are not adjactent. Please try again" << endl << endl;
+            }
+        } while(!validRegionsSelected);
     } else {
-        cout << "regions are not connected" << endl;
-        return -1;
+        for(int i = 1; i <= 6; i++) {
+            powergrid->useRegion(i);
+        }
     }
+    powergrid->finalize();
     cout << *powergrid << endl;
     delete powergrid;
     return 0;

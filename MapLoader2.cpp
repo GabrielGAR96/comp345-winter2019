@@ -22,14 +22,14 @@ Map* MapLoader2::load(string& fname)
             boost::archive::text_iarchive ar(input);
             ar >> *powergrid;
         } catch(boost::archive::archive_exception& ex) {
-            throw BadMap("Cannont read input file");
+            throw BadMap("Cannont read " + fname + " because it is malformed");
         }
     }
 
     input.close();
 
     if(!powergrid->isValid()) {
-        throw BadMap("Selected map is disconnected");
+        throw BadMap(fname + " represents a disconnected map");
     }
 
     return powergrid;
