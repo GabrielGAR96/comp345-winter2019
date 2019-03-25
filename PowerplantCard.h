@@ -53,9 +53,9 @@ class PowerplantCard : public Card
 
 
 
-        //bool operator==(const PowerplantCard& rhs) const;
+        bool operator==(const PowerplantCard& rhs) const;
         //friend string Player::getNameFromP();
-        //friend ostream& operator<<(ostream& out, const PowerplantCard& c);
+        friend ostream& operator<<(ostream& out, const PowerplantCard& c);
 
 
 };

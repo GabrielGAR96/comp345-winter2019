@@ -110,16 +110,17 @@ bool PowerplantCard::isValidToStore(const Resource r) const
 }
 
 // Names are unique so it suffices to check name:int for equality
-// bool PowerplantCard::operator==(const PowerplantCard& rhs) const
-// {
-//   return this->name == rhs.name;
-// }
-//
-// ostream& operator<<(ostream& out, const PowerplantCard& c)
-// {
-//     out << c.info();
-//     return out;
-// }
+bool PowerplantCard::operator==(const PowerplantCard& rhs) const
+{
+  return this->name == rhs.name;
+}
+
+ostream& operator<<(ostream& out, const PowerplantCard& c)
+{
+    out << c.info();
+    return out;
+}
+
 int PowerplantCard::getNeeded(){
   return this->needed;
 }

@@ -143,6 +143,7 @@ class Graph
         // Constructors
 
         Graph();
+        Graph(const Graph<T>& other);
 
         // Destructor
 
@@ -171,16 +172,13 @@ class Graph
 };
 
 template<typename T>
-T Graph<T>::delVertex(const T& x)
+Graph<T>::Graph()
 {
-    T answer = *(verts.find(x));
-    adjList.erase(x);
-    verts.erase(x);
-    return answer;
 }
 
 template<typename T>
-Graph<T>::Graph()
+Graph<T>::Graph(const Graph<T>& other)
+    : verts(other.verts), adjList(other.adjList)
 {
 }
 
@@ -201,6 +199,15 @@ bool Graph<T>::addVertex(const T& x)
     bool inserted = verts.insert(x).second;
     if(inserted) adjList[x];
     return inserted;
+}
+
+template<typename T>
+T Graph<T>::delVertex(const T& x)
+{
+    T answer = *(verts.find(x));
+    adjList.erase(x);
+    verts.erase(x);
+    return answer;
 }
 
 template<typename T>
@@ -280,6 +287,7 @@ class UndirectedGraph : public Graph<T>
         // Constructors
 
         UndirectedGraph();
+        UndirectedGraph(const UndirectedGraph<T>& other);
 
         // Accessors and mutators
 
@@ -292,6 +300,12 @@ class UndirectedGraph : public Graph<T>
 
 template<typename T>
 UndirectedGraph<T>::UndirectedGraph()
+{
+}
+
+template<typename T>
+UndirectedGraph<T>::UndirectedGraph(const UndirectedGraph<T>& other)
+    : Graph<T>(other), edges(other.edges)
 {
 }
 

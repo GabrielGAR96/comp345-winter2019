@@ -1,9 +1,11 @@
 #ifndef MAP_H
 #define MAP_H
 
-/* #include <vector> */
 #include <string>
 using namespace std;
+
+#include <boost/serialization/set.hpp>
+using namespace boost::serialization;
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -20,19 +22,22 @@ class Map
     private:
         // Data members
 
-        UndirectedGraph<City> powerGridMap;
+        UndirectedGraph<City> powergrid;
         ResourcePool pool;
         ResourceMarket market;
         Elektro bank = 0;
+
+        set<int> activeRegions;
 
         friend class boost::serialization::access;
         template<typename Archive>
         void serialize(Archive & ar, const unsigned int version)
         {
-            ar & powerGridMap;
+            ar & powergrid;
             ar & pool;
             ar & market;
             ar & bank;
+            /* ar & activeRegions; */
         }
     public:
         // Constructors
@@ -44,6 +49,11 @@ class Map
         // areas
         void addElektroToBank(int amount);
         void addResourceToPool(Resource r, int n);
+        void restockMarket(int numPlayers, int step);
+
+        void useRegion(int region);
+        bool test();
+        void finalize();
 
         // We need to build Houses on cities
         // NOTE: Implementation might need some work
