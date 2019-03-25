@@ -8,9 +8,24 @@
 #include <string>
 using std::string;
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 enum Resource {
     COAL, OIL, GARBAGE, URANIUM //restrict the value of the resource to one of those four
 };
+
+namespace boost {
+    namespace serialization {
+
+        template<typename Archive>
+        void serialize(Archive & ar, Resource & r, const unsigned int version)
+        {
+            ar & r;
+        }
+
+    }
+}
 
 inline string getResourceName(Resource resource) { //function that gets the string equivalent to the resource
     switch (resource) {

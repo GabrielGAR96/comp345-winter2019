@@ -1,13 +1,21 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
+/* #include <unordered_set> */
+/* #include <unordered_map> */
+/* #include <vector> */
 #include <deque>
 #include <iostream>
 #include <functional>
 using namespace std;
+
+#include <boost/serialization/unordered_set.hpp>
+#include <boost/serialization/unordered_map.hpp>
+#include <boost/serialization/vector.hpp>
+using namespace boost::serialization;
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 /* NOTE: I tried to research how to separate definition from implementation for
  * template classes. Any solution I found was either beyond my understanding or
@@ -46,6 +54,19 @@ struct Edge {
     virtual ~Edge() {}
 };
 
+namespace boost {
+namespace serialization {
+
+    template<typename Archive, typename T>
+    void serialize(Archive & ar, Edge<T>& edge, const unsigned int version)
+    {
+        ar & edge.source;
+        ar & edge.dest;
+        ar & edge.cost;
+    }
+}
+}
+
 // Useful for Powergrid because source and dest are interchangeable
 template<typename T>
 struct UndirectedEdge : public Edge<T> {
@@ -66,6 +87,17 @@ bool UndirectedEdge<T>::operator==(const UndirectedEdge<T>& rhs) const
     return (this->source == rhs.source || this->source == rhs.dest) &&
         (this->dest == rhs.source || this->dest == rhs.dest) &&
         this->cost == rhs.cost;
+}
+
+namespace boost {
+namespace serialization {
+
+    template<typename Archive, typename T>
+    void serialize(Archive & ar, UndirectedEdge<T>& edge, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<Edge<T> >(edge);
+    }
+}
 }
 
 // Specialization of hash<> so we can put edges in a hashset
@@ -95,11 +127,23 @@ class Graph
         // Data members
         unordered_set<T> verts;
         unordered_map<T, vector<Edge<T> > > adjList;
+
+    private:
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & verts;
+            ar & adjList;
+        }
+
     public:
 
         // Constructors
 
         Graph();
+        Graph(const Graph<T>& other);
 
         // Destructor
 
@@ -128,16 +172,13 @@ class Graph
 };
 
 template<typename T>
-T Graph<T>::delVertex(const T& x)
+Graph<T>::Graph()
 {
-    T answer = *(verts.find(x));
-    adjList.erase(x);
-    verts.erase(x);
-    return answer;
 }
 
 template<typename T>
-Graph<T>::Graph()
+Graph<T>::Graph(const Graph<T>& other)
+    : verts(other.verts), adjList(other.adjList)
 {
 }
 
@@ -158,6 +199,15 @@ bool Graph<T>::addVertex(const T& x)
     bool inserted = verts.insert(x).second;
     if(inserted) adjList[x];
     return inserted;
+}
+
+template<typename T>
+T Graph<T>::delVertex(const T& x)
+{
+    T answer = *(verts.find(x));
+    adjList.erase(x);
+    verts.erase(x);
+    return answer;
 }
 
 template<typename T>
@@ -225,10 +275,19 @@ class UndirectedGraph : public Graph<T>
     private:
         // Data members
         unordered_set<UndirectedEdge<T> > edges;
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & boost::serialization::base_object<Graph<T> >(*this);
+            ar & edges;
+        }
     public:
         // Constructors
 
         UndirectedGraph();
+        UndirectedGraph(const UndirectedGraph<T>& other);
 
         // Accessors and mutators
 
@@ -241,6 +300,12 @@ class UndirectedGraph : public Graph<T>
 
 template<typename T>
 UndirectedGraph<T>::UndirectedGraph()
+{
+}
+
+template<typename T>
+UndirectedGraph<T>::UndirectedGraph(const UndirectedGraph<T>& other)
+    : Graph<T>(other), edges(other.edges)
 {
 }
 
@@ -263,7 +328,7 @@ bool UndirectedGraph<T>::addEdge(const T& u, const T& v, double cost)
     // accordingly
     if(edges.find(edge) != edges.end()) return false;
 
-    // Do the vertecies actuall exist?
+    // Do the vertecies actually exist?
     if(Graph<T>::verts.find(u) == Graph<T>::verts.end() || Graph<T>::verts.find(v) == Graph<T>::verts.end()) return false;
 
     // Do the insertion and return success

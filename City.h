@@ -7,6 +7,9 @@
 #include <vector>
 using namespace std;
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 #include "House.h"
 
 // Forward declaration so we can hash
@@ -30,6 +33,17 @@ class City
         int numOccupants = 0;
         int buildingCost = 10;
         House houses[3];
+
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & name;
+            ar & region;
+            ar & numOccupants;
+            ar & buildingCost;
+            ar & houses;
+        }
 
     public:
         // Constructors

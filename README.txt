@@ -1,6 +1,6 @@
 NOTES:
-- This Assignment was completed by Jeremie Izzo (40016103), Gabriel Ribeiro and Michael
-  Wilgus (29206388).
+- This Assignment was completed by Jeremie Izzo (40016103), Gabriel Ribeiro
+  (40105717) and Michael Wilgus (29206388).
 
 - Code is documented with comments.
 
@@ -21,7 +21,8 @@ g++ -Wall -std=c++11 Map.cpp City.cpp driver1.cpp House.cpp -o driver1
 g++ -Wall -std=c++11 Map.cpp MapLoader.cpp City.cpp House.cpp driver2.cpp -o driver2
 
 # Driver for part 3
-g++ -Wall -g -std=c++11 MapLoader.cpp Map.cpp House.cpp City.cpp driver3.cpp -o driver3
+g++ -Wall -g -std=c++11 MapLoader.cpp Map.cpp House.cpp City.cpp driver3.cpp
+-lboost_serialization -o driver3
 
 # Driver for part 4
 g++ -Wall -std=c++11 Player.cpp PowerplantCard.cpp Card.cpp driver4.cpp -o driver4

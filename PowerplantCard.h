@@ -56,9 +56,9 @@ class PowerplantCard : public Card
         int power();
 
         void reducecurrentStored();
-        //bool operator==(const PowerplantCard& rhs) const;
-        //friend string Player::getNameFromP();
-        //friend ostream& operator<<(ostream& out, const PowerplantCard& c);
+        bool operator==(const PowerplantCard& rhs) const;
+        friend string Player::getNameFromP();
+        friend ostream& operator<<(ostream& out, const PowerplantCard& c);
         int getR1();
         int getR2();
         void reduceR1();
