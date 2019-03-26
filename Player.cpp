@@ -16,8 +16,6 @@ using namespace std;
 Player::Player(HouseColor color) {
     this->color = color;
     this->cardCounter = 0;
-    this->money = 50;
-
 }
 
 Player::~Player()
@@ -154,6 +152,26 @@ void Player::toString(){
     std::cout << "Cities: " << this->getCities()<<'\n';
     std::cout << "Cards:\n" << this->getCards()<<'\n';
 }
+
+int Player::getHousesLeft() const
+{
+    return numHouses;
+}
+
+string Player::info()
+{
+    string answer = "";
+    answer += "Score: " + to_string(getScore()) + "\n";
+    answer += "Color: " + getColor() + "\n";
+    answer += "Elektro: " + to_string(getMoney()) + "\n";
+    answer += "Resources: " + getResources() + "\n";
+    answer += "Cities: " + getCities() + "\n";
+    answer += "Cards: " + getCards() + "\n";
+    answer += "Houses: " + to_string(getHousesLeft()) + "\n";
+
+    return answer;
+}
+
 void Player::addResource(Resource resource){
   switch(resource)
   {

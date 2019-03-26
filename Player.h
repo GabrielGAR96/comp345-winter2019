@@ -16,6 +16,7 @@ class Player {
         vector<string> cities;
         PowerplantCard cardArray[3];
         HouseColor color;
+        int numHouses = 21;
         int cardCounter;
         int money;
 
@@ -67,8 +68,10 @@ class Player {
         int getNumCities();
 
         string getColor();
+        int getHousesLeft() const;
 
         void toString();
+        string info();
 
         int powerCard();
 

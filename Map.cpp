@@ -11,18 +11,36 @@ using namespace std;
 #include "Resource.h"
 
 Map::Map()
+    : bank(1000)
 {
+    market.initialize(pool);
 }
 
 Map::Map(UndirectedGraph<City> cities)
+    : bank(1000)
 {
     powergrid = cities;
     market.initialize(pool);
 }
 
+int Map::getElektroFromBank(int amount)
+{
+    int balance = bank.getElektro();
+    if(amount <= balance) {
+        bank.setElektro(balance - amount);
+        return amount;
+    }
+    return 0;
+}
+
 void Map::addElektroToBank(int amount)
 {
     bank.setElektro(bank.getElektro() + amount);
+}
+
+int Map::getBankBalance() const
+{
+    return bank.getElektro();
 }
 
 void Map::addResourceToPool(Resource r, int n)
@@ -33,6 +51,22 @@ void Map::addResourceToPool(Resource r, int n)
 void Map::restockMarket(int numPlayers, int step)
 {
     market.restock(pool, numPlayers, step);
+}
+
+
+int Map::getCheapestResource(Resource r) const
+{
+    return market.getCheapest(r);
+}
+
+Resource Map::buy(Resource r)
+{
+    return market.buy(r);
+}
+
+int Map::getAmount(Resource r) const
+{
+    return market.getAmount(r);
 }
 
 void Map::useRegion(int region)
@@ -84,7 +118,7 @@ void Map::finalize()
     powergrid = temp;
 }
 
-void Map::buyCity(City city, House house)
+void Map::buyCity(const City& city, House house)
 {
     // We Have to add a House but that means changing a vertex in the graph the
     // stratgey is to just save the edges delete the vertex update it then
@@ -102,6 +136,11 @@ void Map::buyCity(City city, House house)
 unordered_set<City> Map::getCities() const
 {
     return powergrid.getVerts();
+}
+
+vector<Edge<City> > Map::getNeighbors(const City& city) const
+{
+    return powergrid.getEdges(city);
 }
 
 bool Map::isValid() const

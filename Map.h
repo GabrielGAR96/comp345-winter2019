@@ -25,7 +25,7 @@ class Map
         UndirectedGraph<City> powergrid;
         ResourcePool pool;
         ResourceMarket market;
-        Elektro bank = 0;
+        Elektro bank;
 
         set<int> activeRegions;
 
@@ -37,7 +37,6 @@ class Map
             ar & pool;
             ar & market;
             ar & bank;
-            /* ar & activeRegions; */
         }
     public:
         // Constructors
@@ -48,8 +47,13 @@ class Map
         // A map includes markets and pools we need to add tokens to these
         // areas
         void addElektroToBank(int amount);
+        int getElektroFromBank(int amount);
+        int getBankBalance() const;
         void addResourceToPool(Resource r, int n);
         void restockMarket(int numPlayers, int step);
+        int getCheapestResource(Resource r) const;
+        Resource buy(Resource r);
+        int getAmount(Resource r) const;
 
         void useRegion(int region);
         set<int> getRegions() const;
@@ -60,10 +64,11 @@ class Map
         // We need to build Houses on cities
         // NOTE: Implementation might need some work
         // See: Note in UndirectedGraph<T> in Graph.h
-        void buyCity(City city, House house);
+        void buyCity(const City& city, House house);
 
         // Return cities that are on the board for use with purchasing
         unordered_set<City> getCities() const;
+        vector<Edge<City> > getNeighbors(const City& city) const;
         // Wrapper around Graph::isConnected() see Graph.h for details
         bool isValid() const;
         // Return a string suitable for writing to save file
