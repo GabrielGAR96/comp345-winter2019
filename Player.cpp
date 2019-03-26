@@ -9,6 +9,7 @@ using namespace std;
 #include"Card.h"
 #include "HouseColor.h"
 #include "PowerplantCard.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -24,15 +25,12 @@ Player::~Player()
 {
 }
 
-//string PowerplantCard::getNameFromP(){
-//  return name;
-//}
 //auction a selected card modifying the auction value on card
-void Player::auctionCard(PowerplantCard card, int value) {
+int Player::auctionCard(PowerplantCard card) {
         int bet;
         cout << "Please enter an auction amount: ";
         cin >> bet;
-        while (bet < value) {
+        while (bet <= card.GetPrice()) {
             cout << "Please enter a bet greater than the current auction value: ";
             cin >> bet;
         }
@@ -41,15 +39,16 @@ void Player::auctionCard(PowerplantCard card, int value) {
             cout << "Enter a different amout or bet 0 to skip: ";
             cin >> bet;
             if (bet == 0)
-                return;
+                return 0;
         }
+        card.SetPrice(bet);
+        return card.GetPrice();
 }
 
 //buy a card and places in card array, if player already has 3 cards it will ask to swap for one
 void Player::purchaseCard(PowerplantCard card, int value) {
-    int position = cardCounter;
     if (cardCounter == 3) {
-
+        int position;
         cout << "What card would you like to swap with?" << endl;
         cout << "Press 1 for " << cardArray[0].getName();
         cout << "\nPress 2 for " << cardArray[1].getName();
@@ -63,16 +62,16 @@ void Player::purchaseCard(PowerplantCard card, int value) {
         }
     }
     money = money - value;
-    cardArray[position] = card;
-    if(!(cardCounter==3))
-      cardCounter++;
+    cardArray[cardCounter] = card;
+    if(!(cardCounter == 3))
+    cardCounter++;
 }
 
 //outputs the players current cards
 string Player::getCards() {
     string myCards = "";
     for (int i = 0; i < cardCounter; i++) {
-      myCards.append(cardArray[i].info()+ "\n\n");
+        myCards.append(cardArray[i].info());
     }
 
     return myCards;
@@ -82,11 +81,10 @@ string Player::getCards() {
 int Player::getScore() {
     int price=0;
     int myScore=0;
-    for (int i = 0; i < cardCounter; i++){
+    for (int i = 0; i < cardCounter; i++)
         if (cardArray[i].getName() > price)
             price = cardArray[i].getName();
-          }
-        myScore = price;
+            myScore = price;
     return myScore;
 }
 
@@ -107,24 +105,17 @@ int Player::getNumCities() {
 
 //buys resources based on the currently owned cards and stores it in the card
 void Player::buyResource(int cardPosition, Resource resources, int amount, int price) {
-
-  for (int i = 0; i < amount; i++) {
-        if(cardArray[cardPosition].store(resources)){
+    for (int i = 0; i < amount; i++) {
+        cardArray[cardPosition].store(resources);
         this->money = money - price;
-        addResource(resources);
-      }
-
-
+    }
 }
-}
-
 
 //outputs the resources the player owns
 string Player::getResources() {
     string result = "";
     for (int i = 0; i < cardCounter; i++) {
-        result.append((i+1) + ". ");
-        result.append(cardArray[i].getResources() + "\n");
+        result.append(cardArray[i].getResources() + " ");
     }
     return result;
 }
@@ -142,8 +133,10 @@ string Player::getCities() {
     return city;
 }
 
+
 string Player::getColor() {
     return getHouseColorName(color);
+
 }
 
 void Player::toString(){
@@ -153,62 +146,4 @@ void Player::toString(){
     std::cout << "Resources: " <<this->getResources() <<'\n';
     std::cout << "Cities: " << this->getCities()<<'\n';
     std::cout << "Cards:\n" << this->getCards()<<'\n';
-}
-void Player::addResource(Resource resource){
-  switch(resource)
-  {
-    case(OIL):
-    oil.push_back(OIL);
-    oilNum++;
-    break;
-    case(URANIUM):
-    uranium.push_back(URANIUM);
-    uraniumNum++;
-    break;
-    case(GARBAGE):
-    garbage.push_back(GARBAGE);
-    garbageNum++;
-    break;
-    case(COAL):
-    coal.push_back(COAL);
-    coalNum++;
-    break;
-
-  }
-}
-int Player::getOil(){
-  return oilNum;
-}
-int Player::getCoal(){
-  return coalNum;
-}
-int Player::getUranium(){
-  return uraniumNum;
-}
-int Player::getGarbage(){
-  return garbageNum;
-}
-void Player::getTotResources(){
-  cout<<"GARBARGE = "<<garbageNum<<endl;
-  cout<<"COAL = "<<coalNum<<endl;
-  cout<<"OIL = "<<oilNum<<endl;
-  cout<<"URANIUM = "<<uraniumNum<<endl;
-}
-int Player::powerCard(){
-
-  cout<<"What card would you like to power?"<<endl;
-  for(int i=0;i<cardCounter;i++){
-    cout<<i+1<<": " << cardArray[i].info();
-  }
-  //int housespowered;
-  //int card
-  //cin>>card;
-  //cardArray[card]
-return 0;
-}
-int Player:: getCardCounter(){
-  return cardCounter;
-}
-PowerplantCard Player::getCard(int position){
-  return cardArray[position];
 }
