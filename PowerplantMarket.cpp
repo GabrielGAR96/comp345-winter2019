@@ -1,7 +1,9 @@
 #include <algorithm>
 using namespace std;
 
+#include "Card.h"
 #include "PowerplantMarket.h"
+#include "Deck.h"
 
 PowerplantMarket::PowerplantMarket()
 {
@@ -21,10 +23,15 @@ void PowerplantMarket::arrange()
     sort(market, market+7);
 }
 
-PowerplantCard PowerplantMarket::remove(const int index, const Deck& deck)
+PowerplantCard PowerplantMarket::buy(const int index, Deck& deck)
 {
-    PowerplantCard card = market[index];
-    market[index] = deck.draw();
+    PowerplantCard powerplant = market[index];
+    Card* newCard = deck.draw();
+    if(newCard->getType() == CardType::STEP3) {
+        deck.setStep3Drawn(true);
+    }
+    PowerplantCard* newPowerplant = dynamic_cast<PowerplantCard*>(newCard);
+    market[index] = *newPowerplant;
     arrange();
-    return card;
+    return powerplant;
 }

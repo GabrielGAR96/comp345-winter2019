@@ -59,12 +59,12 @@ int Map::getCheapestResource(Resource r) const
     return market.getCheapest(r);
 }
 
-Resource Map::buy(Resource r)
+Resource Map::buyResource(Resource r)
 {
     return market.buy(r);
 }
 
-int Map::getAmount(Resource r) const
+int Map::getResourceAmount(Resource r) const
 {
     return market.getAmount(r);
 }

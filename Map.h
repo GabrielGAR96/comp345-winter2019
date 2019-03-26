@@ -52,8 +52,8 @@ class Map
         void addResourceToPool(Resource r, int n);
         void restockMarket(int numPlayers, int step);
         int getCheapestResource(Resource r) const;
-        Resource buy(Resource r);
-        int getAmount(Resource r) const;
+        Resource buyResource(Resource r);
+        int getResourceAmount(Resource r) const;
 
         void useRegion(int region);
         set<int> getRegions() const;

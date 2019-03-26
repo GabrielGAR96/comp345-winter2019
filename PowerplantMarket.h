@@ -4,9 +4,8 @@
 #include <string>
 using namespace std;
 
-#include <boost/serialization/priority_queue.hpp>
-
 #include "PowerplantCard.h"
+#include "Deck.h"
 
 class PowerplantMarket
 {
@@ -18,7 +17,7 @@ class PowerplantMarket
         PowerplantMarket();
         PowerplantMarket(const PowerplantCard market[8]);
 
-        PowerplantCard remove(const int index, const Deck& deck);
+        PowerplantCard buy(const int index, Deck& deck);
         void addTo(const PowerplantCard& card);
         string toString() const;
 };

@@ -7,6 +7,8 @@
 
 #include "Map.h"
 #include "Player.h"
+#include "Deck.h"
+#include "PowerplantMarket.h"
 
 class Game
 {
@@ -15,6 +17,8 @@ class Game
         vector<Player> players;
         int step = 1;
         Map* board;
+        Deck deck;
+        PowerplantMarket powerPlants;
 
         static void readDirectory(const string& name, map<int, string>& files);
         static Map* selectMap(map<int, string>& files);
