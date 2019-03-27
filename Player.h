@@ -10,6 +10,7 @@ using namespace std;
 #include"Card.h"
 #include "HouseColor.h"
 #include "PowerplantCard.h"
+#include "SummaryCard.h"
 #include "Resource.h"
 class Player {
     private:
@@ -18,7 +19,7 @@ class Player {
         HouseColor color;
         int numHouses = 21;
         int cardCounter;
-        int money;
+        int money=0;
 
 
         int oilNum=0;
@@ -30,6 +31,8 @@ class Player {
         std::vector<Resource> uranium;
         std::vector<Resource> oil;
         std::vector<Resource> coal;
+
+        SummaryCard summary;
     public:
 
         Player();

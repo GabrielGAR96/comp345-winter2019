@@ -1,4 +1,5 @@
 #include <list>
+#include <string>
 using namespace std;
 
 #include "Card.h"
@@ -46,6 +47,16 @@ bool Deck::step3Drawn()
 void Deck::setStep3Drawn(bool step3)
 {
     this->step3 = step3;
+}
+
+string Deck::toString() const
+{
+    string answer = "";
+    for(Card* cPtr : deck)
+    {
+        answer += cPtr->info() + "\n\n";
+    }
+    return answer;
 }
 
 void Deck::shuffle(PowerplantCard deck[], int size)

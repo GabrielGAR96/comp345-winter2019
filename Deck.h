@@ -2,6 +2,7 @@
 #define DECK_H
 
 #include <list>
+#include <string>
 using namespace std;
 
 #include "Card.h"
@@ -21,6 +22,7 @@ class Deck
         Card* draw();
         bool step3Drawn();
         void setStep3Drawn(bool step3);
+        string toString() const;
 };
 
 #endif

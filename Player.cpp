@@ -8,6 +8,7 @@ using namespace std;
 #include"Resource.h"
 #include"Card.h"
 #include "HouseColor.h"
+#include "SummaryCard.h"
 #include "PowerplantCard.h"
 
 using namespace std;
@@ -168,6 +169,7 @@ string Player::info()
     answer += "Cities: " + getCities() + "\n";
     answer += "Cards: " + getCards() + "\n";
     answer += "Houses: " + to_string(getHousesLeft()) + "\n";
+    answer += "SummaryCard:\n" + summary.info() + "\n";
 
     return answer;
 }
