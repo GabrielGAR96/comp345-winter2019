@@ -73,6 +73,7 @@ class Map
         bool isValid() const;
         // Return a string suitable for writing to save file
         string printMap() const;
+        string marketDescription() const;
 
     friend ostream& operator<<(ostream& out, const Map& m);
 };

@@ -180,6 +180,11 @@ string Map::printMap() const
     return mapText;
 }
 
+string Map::marketDescription() const
+{
+    return market.toString();
+}
+
 ostream& operator<<(ostream& out, const Map& m)
 {
     out << m.powergrid;

@@ -142,3 +142,4 @@ string ResourceMarket::toString() const
 {
     string answer = "Coal: " + to_string(amountCoal) + "Oil: " + to_string(amountOil) + "Garbage: " + to_string(amountGarbage) + "Uranium: " + to_string(amountUranium);
     return answer;
+}
