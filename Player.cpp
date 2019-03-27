@@ -71,7 +71,7 @@ void Player::purchaseCard(PowerplantCard card, int value) {
 string Player::getCards() {
     string myCards = "";
     for (int i = 0; i < cardCounter; i++) {
-        myCards.append(cardArray[i].info());
+        myCards.append(cardArray[i].info() + "\n");
     }
 
     return myCards;
