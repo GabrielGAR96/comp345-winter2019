@@ -17,32 +17,32 @@ using namespace std;
 //   }
 //   return *revOrder;
 // }
-//
-// int bureacracy(Player player, int poweredHouses){
-//   switch(poweredHouses){
-//       case 0 : player.setMoney(10); break;
-//       case 1 : player.setMoney(22); break;
-//       case 2 : player.setMoney(33); break;
-//       case 3 : player.setMoney(44); break;
-//       case 4 : player.setMoney(54); break;
-//       case 5 : player.setMoney(64); break;
-//       case 6 : player.setMoney(73); break;
-//       case 7 : player.setMoney(82); break;
-//       case 8 : player.setMoney(90); break;
-//       case 9 : player.setMoney(98); break;
-//       case 10 : player.setMoney(105); break;
-//       case 11 : player.setMoney(112); break;
-//       case 12 : player.setMoney(118); break;
-//       case 13 : player.setMoney(124); break;
-//       case 14 : player.setMoney(129); break;
-//       case 15 : player.setMoney(134); break;
-//       case 16 : player.setMoney(138); break;
-//       case 17 : player.setMoney(142); break;
-//       case 18 : player.setMoney(145); break;
-//       case 19 : player.setMoney(148); break;
-//       case 20 : player.setMoney(150); break;
-//   }
-// }
+
+int bureaucracy(Player player, int poweredHouses){
+  switch(poweredHouses){
+      case 0 : player.setMoney(10); break;
+      case 1 : player.setMoney(22); break;
+      case 2 : player.setMoney(33); break;
+      case 3 : player.setMoney(44); break;
+      case 4 : player.setMoney(54); break;
+      case 5 : player.setMoney(64); break;
+      case 6 : player.setMoney(73); break;
+      case 7 : player.setMoney(82); break;
+      case 8 : player.setMoney(90); break;
+      case 9 : player.setMoney(98); break;
+      case 10 : player.setMoney(105); break;
+      case 11 : player.setMoney(112); break;
+      case 12 : player.setMoney(118); break;
+      case 13 : player.setMoney(124); break;
+      case 14 : player.setMoney(129); break;
+      case 15 : player.setMoney(134); break;
+      case 16 : player.setMoney(138); break;
+      case 17 : player.setMoney(142); break;
+      case 18 : player.setMoney(145); break;
+      case 19 : player.setMoney(148); break;
+      case 20 : player.setMoney(150); break;
+  }
+}
 
 //
 //
@@ -182,8 +182,99 @@ while(true){
 }}return true;
 }
 
+bool powerableCard(Player player, PowerplantCard card){
+  int needed = card.getNeeded();
+  if(card.getResourceTypeSize()==2){
+  Resource R1 = getResourceByName(card.getResource1());
+  Resource R2 = getResourceByName(card.getResource2());
+  int current = 0;
+  int storedResource1 = player.findNumResource(R1);
+  int storedResource2 = player.findNumResource(R1);
+  if(storedResource1+storedResource2>=needed)
+    return true;
+  return false;
+}
+else{
+  Resource R1 = getResourceByName(card.getResource1());
+  int storedResource1 = player.findNumResource(R1);
+  if(storedResource1>=needed)
+    return true;
+  return false;
+  }
+}
+void burnResource(Player& p, Resource r){
+
+  p.deleteResource(r);
+  for(int i=0;i<p.getCardCounter();i++){
+    if(p.getCard(i).getResource1()==getResourceName(r)){
+      p.getCard(i).reduceR1();
+      p.getCard(i).reducecurrentStored();
+      break;
+    }
+    if(p.getCard(i).getR2()==r){
+      p.getCard(i).reduceR2();
+      p.getCard(i).reducecurrentStored();
+      break;
+    }
+  }
+}
+
+bool phase5(Player player){
+  int poweredCities=0;
+    cout<<player.getColor()<<"\'s turn\n"<<endl;
+
+    while (true) {
+    cout<<"You currently own:\n"<<endl;
+
+    cout<<"RESOURCES: "<<endl;
+    player.getTotResources();
+    cout<<"\nCARDS:\n"<<endl;
+    cout<<player.getCards();
+    cout<<"\nWould you like to power Cities? 1-YES 0-NO"<<endl;
+    int choice;
+    cin>>choice;
+    while(!(choice==0||choice==1)){
+      cout<<"\nPlease enter a valid choice!\n"<<endl;
+      cin>>choice;
+    }
+    if(choice==0){
+      cout<<"Exiting powering phase!......"<<endl;
+      return false;
+    }
+
+    cout<<"Which power plant card would you like to use to power cities? Press 1 for first 2 for second......\n"<<endl;
+    cout<<player.getCards()<<endl;
+    int cardChoice;
+    PowerplantCard card = player.getCard(cardChoice);
+    cin>>cardChoice;
+    while(cardChoice<1||cardChoice>player.getCardCounter()){
+       cout<<"Please enter a valid card! Enter 1 for first card 2 for second card or 3 for third card"<<endl;
+       cout<<"Or enter 9 to exit resouce buying phase.\n";
+       cin>>cardChoice;
+       if(cardChoice==9){
+         cout<<"\n\n.....Exiting powering phase....."<<endl;
+         return false;
+       }
+     }
+    if(!powerableCard(player,card))
+      cout<<"You do not have enough RESOURCES to power this card......\n"<<endl;
+    else{
+      if(card.getResourceTypeSize()==1){
+        poweredCities += card.getPowerable();
+        cout<<"\nCities being powered: "<<poweredCities<<"\n"<<endl;
+        for(int i=0;i<card.getNeeded();i++)
+          burnResource(player, getResourceByName(card.getResource1()));
 
 
+      }
+
+    }
+
+
+
+
+  }
+}
 
 
 int main(){
@@ -206,50 +297,43 @@ PowerplantCard card3(1, 2, 1, COAL, OIL);
 player.purchaseCard(card, 17);
 player.purchaseCard(card2, 5);
 player.purchaseCard(card3, 1);
+
+
+Resource u = URANIUM;
+Resource g = GARBAGE;
+Resource g2 = GARBAGE;
+Resource u2 = URANIUM;
+Resource c1 = COAL;
+Resource c2 = COAL;
 // cout << "Buying resources for player..." << endl;
-player.buyResource(0, URANIUM, 1, 10);
 
 
+player.buyResource(0, u, 1, 1);
+player.buyResource(1, g2, 2, 2);
 
-
-
+// cout<<"R1: ";
+// cout<<player.getCard(0).getR1()<<endl;
+// cout<<"curent stored: ";
+// cout<<player.getCard(0).getCurrentStored()<<endl;
+// player.getTotResources();
 //
-// cout << "Buying City for player....\n";
-// player1.buyCities("Montreal");
-// cout << "\nPlayer 1:" << '\n';
 //
-// // Print player should now have items
-// player1.toString();
-
-
-phase3(player);
-
-
-
-
-
-
-
-
-
-// cout<<"RESOURCE BUYING PHASE!"<<endl;
-// cout<<"\n"<<players[0].getColor()<<"\'s turn:\nAvalable: "<<players[0].getMoney()<<endl;
-// int loop=-1;
+// burnResource(player, URANIUM);
 //
-// while(loop != 0){
-//   int card;
-//   cout<<"\nWhat Card would you like to buy resouces f or?\nCARDS:\n"<<players[0].getCards()<<endl;
-//   cin>>card;
-//   cout<<"\nRESORCES:\n"<<endl;
-//   players[0].getTotResources();
-//   cout<< "\nPress to buy:\n1-OIL\n2-GARBAGE\n3-COAL\n4-URANIUM\n0-exit\nAVALABLE: $" << players[0].getMoney()<<endl;
-//   cin>>loop;
-//   if(loop==0)
-//     break;
-//   Resource buying = chosenResource(loop);
-//   cout<<"How many would you like to buy?\n";
-//   int amount=0;
-//   cin>>amount;
-//   players[0].buyResource(card, buying, amount, 10);
-//  }
+// //player.getCard(0).reduceR1();
+// cout<<"\nafter burn: ";
+// cout<<player.getCard(0).getR1()<<endl;
+// cout<<"current strored: ";
+// cout<<player.getCard(0).getCurrentStored()<<endl;
+// player.getTotResources();
+// //bureaucracyPhase(player);
+
+
+//phase3(player);
+
+
+phase5(player);
+
+
+
 }

@@ -45,6 +45,10 @@ bool PowerplantCard::store(const Resource r)
     if(!isValidToStore(r)) return false;
     resources.push_back(r);
     currentStored++;
+    if(r==resourceTypes[0])
+      R1++;
+    else
+      R2++;
     return true;
 }
 string PowerplantCard::getResource1(){
@@ -134,4 +138,27 @@ int PowerplantCard::getCurrentStored(){
 }
 int PowerplantCard::getResourceTypeSize(){
   return resourceTypesSize;
+}
+
+bool PowerplantCard::isPowerable(){
+  if(currentStored>=needed)
+    return true;
+  return false;
+}
+
+void PowerplantCard::reducecurrentStored(){
+  currentStored--;
+}
+
+int PowerplantCard::getR1(){
+  return R1;
+}
+int PowerplantCard::getR2(){
+  return R2;
+}
+void PowerplantCard::reduceR1(){
+   R1--;
+}
+void PowerplantCard::reduceR2(){
+  R2--;
 }

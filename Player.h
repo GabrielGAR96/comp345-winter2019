@@ -26,10 +26,10 @@ class Player {
         int uraniumNum=0;
         int coalNum=0;
 
-        std::vector<Resource> garbage;
-        std::vector<Resource> uranium;
-        std::vector<Resource> oil;
-        std::vector<Resource> coal;
+        std::vector<Resource*> garbage;
+        std::vector<Resource*> uranium;
+        std::vector<Resource*> oil;
+        std::vector<Resource*> coal;
     public:
 
         Player();
@@ -47,7 +47,7 @@ class Player {
         void purchaseCard(PowerplantCard card, int value);
         //method to get cards
         string getCards();
-        PowerplantCard getCard(int position);
+        PowerplantCard &getCard(int position);
         //determines score from owned cards
         int getScore();
         //chooses resources to buy
@@ -79,6 +79,9 @@ class Player {
 
         int powerableHouses();
         void addResource(Resource resource);
+        void deleteResource(Resource resource);
+        int findNumResource(Resource resource);
+        int gettotstored();
 };
 
 #endif
