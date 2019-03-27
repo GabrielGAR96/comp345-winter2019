@@ -15,6 +15,7 @@ class PowerplantCard : public Card
         // Data members
 
         int name;
+        int price = name;
         int powerable;
         int needed;
         int currentStored = 0;
@@ -40,6 +41,8 @@ class PowerplantCard : public Card
         // Accessors and mutators
 
         int getName() const;
+        int GetPrice() const { return price; }
+        void SetPrice(int price){this->price = price;}
         int getPowerable() const;
         bool store(const Resource r);
         string getResources();
