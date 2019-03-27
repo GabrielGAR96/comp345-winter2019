@@ -157,3 +157,9 @@ void PowerplantCard::reduceR1(){
 void PowerplantCard::reduceR2(){
   R2--;
 }
+void PowerplantCard::setpowering(bool powering){
+  this->powering = powering;
+}
+bool PowerplantCard::getPowering(){
+  return powering;
+}

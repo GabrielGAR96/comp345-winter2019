@@ -18,6 +18,7 @@ class Player {
         HouseColor color;
         int cardCounter;
         int money;
+        int housesOwned=4;
 
 
         int oilNum=0;
@@ -30,7 +31,8 @@ class Player {
         std::vector<Resource*> oil;
         std::vector<Resource*> coal;
     public:
-
+        void setHouses(int houses);
+        int getHouses();
         Player();
         Player(HouseColor color);
         ~Player();

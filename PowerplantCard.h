@@ -23,6 +23,7 @@ class PowerplantCard : public Card
         vector<Resource> resources;
         int R1=0;
         int R2=0;
+        bool powering = false;
         // Helper Functions
 
         // Powerplants can only store certain kinds of resources and specific
@@ -40,7 +41,8 @@ class PowerplantCard : public Card
         PowerplantCard(int name, int powerable, int needed, Resource first, Resource second);
 
         // Accessors and mutators
-
+        void setpowering(bool powering);
+        bool getPowering();
         int getName() const;
         int getPowerable() const;
         bool store(const Resource r);
@@ -57,7 +59,7 @@ class PowerplantCard : public Card
 
         void reducecurrentStored();
         bool operator==(const PowerplantCard& rhs) const;
-        friend string Player::getNameFromP();
+        //friend string Player::getNameFromP();
         friend ostream& operator<<(ostream& out, const PowerplantCard& c);
         int getR1();
         int getR2();
