@@ -15,7 +15,7 @@ class PowerplantCard : public Card
         // Data members
 
         int name;
-        int price = name;
+        int price = name; // initializes the price with the same value as the card's number 
         int powerable;
         int needed;
         int currentStored = 0;
