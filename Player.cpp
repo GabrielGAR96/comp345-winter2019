@@ -14,12 +14,18 @@ using namespace std;
 
 using namespace std;
 
+Player::Player(){}
 //constructor for a player setting initail $$ and color
 Player::Player(HouseColor color) {
     this->color = color;
     this->cardCounter = 0;
 }
-
+int Player::getHouses(){
+  return housesOwned;
+}
+void Player::setHouses(int house){
+  housesOwned += house;
+}
 Player::~Player()
 {
 }
@@ -142,8 +148,10 @@ void Player::toString(){
     std::cout << "Score: " << this->getScore() <<'\n';
     std::cout << "Color: " << this->getColor()<<'\n';
     std::cout << "Elektro:  " <<this->getMoney() <<'\n';
-    std::cout << "Resources: " <<this->getResources() <<'\n';
-    std::cout << "Cities: " << this->getCities()<<'\n';
+    std::cout << "Resources: " <<"\n"<<endl;
+    getTotResources();
+
+    std::cout << "\nCities: " << this->getCities()<<'\n';
     std::cout << "Cards:\n" << this->getCards()<<'\n';
 }
 
@@ -199,10 +207,10 @@ int Player::findNumResource(Resource resource){
     return uraniumNum;
     break;
     case(GARBAGE):
-    garbageNum;
+    return garbageNum;
     break;
     case(COAL):
-    coalNum;
+    return coalNum;
     break;
   }
 }

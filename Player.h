@@ -23,6 +23,7 @@ class Player {
         int cardCounter;
         int money=0;
         SummaryCard summary;
+        int housesOwned=4;
 
 
         int oilNum=0;
@@ -37,7 +38,8 @@ class Player {
         vector<shared_ptr<PowerplantCard>> powerPlants;
         vector<shared_ptr<House>> houses;
     public:
-
+        void setHouses(int houses);
+        int getHouses();
         Player();
         Player(HouseColor color);
         ~Player();
