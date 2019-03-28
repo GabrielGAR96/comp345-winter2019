@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <algorithm>
 //
-
+//counts how many players have passed the auction
 int Game::CountMapFalse(){
     int count = 0;
     for (int i = 0; i < canBuy.size(); ++i) {
@@ -77,6 +77,8 @@ void Game::Phase1Start() {
     phase = 0;
     playPhase = 1;
     plantIndex = -1;
+    
+    //initializes both maps so all players can buy once phase 1 starts
     for (Player &player : players) {
         canBuy[&player] = true;
         canBid[&player] = true;
