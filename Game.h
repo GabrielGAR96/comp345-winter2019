@@ -76,8 +76,8 @@ class Game
         void Phase2End();
         int currentBid;
         int plantIndex;
-        std::map<Player*, bool> canBid;
-        std::map<Player*, bool> canBuy;
+        map<Player*, bool> canBid;
+        map<Player*, bool> canBuy;
         Player *highestBidder;
 };
 /* #ifndef COMP345_WINTER2019_GOOD_BRANCH_GAME_H */

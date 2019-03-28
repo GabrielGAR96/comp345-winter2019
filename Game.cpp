@@ -265,7 +265,7 @@ void Game::Phase1Start() {
     playPhase = 1;
     cout << "Phase 1 started" << endl;
     cout << "Determining player order" << endl;
-    if(fullTurn = 1){
+    if(fullTurn == 1){
     random_shuffle(players.begin(), players.end());
     currentPlayer = &players[0];
     }
