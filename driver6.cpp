@@ -12,14 +12,12 @@ using namespace std;
 int main(int argc, char* argv[])
 {
     Player player1(BLACK);
-    cout << "Player 1 has been created...." << '\n';
-    cout << "\nPlayer 1:" << '\n';
-    player1.toString();
-
+    /*
+     *   cout << "Player 1 has been created...." << '\n';
+     *   cout << "\nPlayer 1:" << '\n';
+     *   player1.toString();
+     */
     Player player2(RED);
-    cout << "Player 2 has been created...." << '\n';
-    cout << "\nPlayer 2:" << '\n';
-    player2.toString();
     Player player3(BLUE);
     Player player4(YELLOW);
     Player player5(GREEN);
@@ -41,16 +39,17 @@ int main(int argc, char* argv[])
     PowerplantCard card14(30, 6, 3, GARBAGE);
 
 
-    cout << "\nAdding a card to player...\n";
-    player1.purchaseCard(card, 17);
-    cout << "Buying resources for player..." << endl;
-    player1.buyResource(0, URANIUM, 1, 10);
-    cout << "Buying City for player....\n";
-    player1.buyCities("Montreal");
-    cout << "\nPlayer 1:" << '\n';
-    player1.buyCities("");
-    player1.toString();
-
+/*
+ *   cout << "\nAdding a card to player...\n";
+ *   player1.purchaseCard(card, 17);
+ *   cout << "Buying resources for player..." << endl;
+ *   player1.buyResource(0, URANIUM, 1, 10);
+ *   cout << "Buying City for player....\n";
+ *   player1.buyCities("Montreal");
+ *   cout << "\nPlayer 1:" << '\n';
+ *   player1.buyCities("");
+ *   player1.toString();
+ */
 
 
 
@@ -83,20 +82,8 @@ int main(int argc, char* argv[])
     game.AddPowerplant(card13);
     game.AddPowerplant(card14);
 
-    cout <<"Size of Player: " << game.GetPlayers().size() << endl;
-    cout << endl;
-    for(Player p : game.GetPlayers()){
-    p.toString();
-    }
-    //cout << game.GetCurrentPlayer() << endl;
-    for(Player p : game.GetPlayers()){
-    p.toString();
-    }
 
-    //game.SetPlayerOrder();
-    cout << endl;
-    cout << endl;
-
+    //Runs the phases 1 and 2 of the game
     game.NewGame();
 
 
