@@ -10,7 +10,7 @@
 #include <algorithm>
 //
 
-int Game::CountMapFalse(){
+int Game_Gabriel::CountMapFalse(){
     int count = 0;
     for (int i = 0; i < canBuy.size(); ++i) {
         if(canBuy[&players[i]] == false) count++;
@@ -18,7 +18,7 @@ int Game::CountMapFalse(){
     return count;
 };
 
-bool Game::AddPlayer(Player player) {
+bool Game_Gabriel::AddPlayer(Player player) {
     if(players.size() == MAX_PLAYERS){
         return false;
     }
@@ -26,7 +26,7 @@ bool Game::AddPlayer(Player player) {
     return true;
 }
 
-void Game::GetPowerplantCards() {
+void Game_Gabriel::GetPowerplantCards() {
     for(int i = 0; i < 4 ; i++){
         cout << "Card: " << powerplantCards[i].getName() << endl;
         cout << "Price: " << powerplantCards[i].GetPrice() << endl;
@@ -37,11 +37,11 @@ void Game::GetPowerplantCards() {
     }
 }
 
-void Game::AddPowerplant(PowerplantCard powerplantCard) {
+void Game_Gabriel::AddPowerplant(PowerplantCard powerplantCard) {
     powerplantCards.push_back(powerplantCard);
 }
 
-void Game::NewGame() {
+void Game_Gabriel::NewGame() {
     cout << "New game started!" << endl;
 
     firstTurn = true;
@@ -51,7 +51,7 @@ void Game::NewGame() {
     Phase1Start();
 }
 
-void Game::UpdatePlayOrder(bool reverse) {
+void Game_Gabriel::UpdatePlayOrder(bool reverse) {
     // Priority: 1 - House
     for (int i = 0; i < GetPlayers().size()-1; ++i) {
         for (int j = 1; j < GetPlayers().size(); ++j) {
@@ -73,7 +73,7 @@ void Game::UpdatePlayOrder(bool reverse) {
     currentPlayer = &players[0];
 
 }
-void Game::Phase1Start() {
+void Game_Gabriel::Phase1Start() {
     phase = 0;
     playPhase = 1;
     plantIndex = -1;
@@ -98,7 +98,7 @@ void Game::Phase1Start() {
 }
 
 
-void Game::Phase2Start() {
+void Game_Gabriel::Phase2Start() {
     playPhase = 2;
     cout << "Phase 2 started" << endl;
 
@@ -111,7 +111,7 @@ void Game::Phase2Start() {
 }
 //if the counter has accessed every single element in the vector
 //the players that did not skip will be able to bid in their following turn
-void Game::Phase2StartBid() {
+void Game_Gabriel::Phase2StartBid() {
     if(counter == players.size()){
         for (Player &player : players) {
             if (canBuy[&player])
@@ -130,7 +130,7 @@ void Game::Phase2StartBid() {
     else Pass();
 }
 
-void Game::Phase2Bid() {
+void Game_Gabriel::Phase2Bid() {
 
     if(plantIndex < 0){
         do{
@@ -156,7 +156,7 @@ void Game::Phase2Bid() {
 
 }
 //players who skip will not have a chance to bid in the next turn in the same auction
-void Game::Pass() {
+void Game_Gabriel::Pass() {
     if(fullTurn == 1 && firstTurn == true) {
         cout << "Cannot skip on first turn!" << endl;
         Phase2StartBid();
@@ -168,7 +168,7 @@ void Game::Pass() {
 
 }
 
-void Game::NextPlayer() {
+void Game_Gabriel::NextPlayer() {
     counter = 0; //counts how many elements the loop has accessed in the vector
 
         canBid[currentPlayer] = false;
@@ -189,7 +189,7 @@ void Game::NextPlayer() {
 }
 
 
-void Game::Phase2End() {
+void Game_Gabriel::Phase2End() {
     firstTurn = false;
     cout << highestBidder->getColor() << " player won the auction!" << endl;
     highestBidder->purchaseCard(*currentCard, currentBid);
