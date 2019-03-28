@@ -39,7 +39,7 @@ class Player {
         vector<shared_ptr<House>> houses;
     public:
         void setHouses(int houses);
-        int getHouses();
+        int getNumHouses();
         Player();
         Player(HouseColor color);
         ~Player();

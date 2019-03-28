@@ -20,7 +20,7 @@ Player::Player(HouseColor color) {
     this->color = color;
     this->cardCounter = 0;
 }
-int Player::getHouses(){
+int Player::getNumHouses(){
   return housesOwned;
 }
 void Player::setHouses(int house){
