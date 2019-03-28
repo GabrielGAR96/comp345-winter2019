@@ -1,6 +1,9 @@
 #ifndef RESOURCE_MARKET_H
 #define RESOURCE_MARKET_H
 
+#include <string>
+using namespace std;
+
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
@@ -40,6 +43,7 @@ class ResourceMarket
         Resource buy(Resource r);
         void restock(ResourcePool& pool, int numPlayers, int step);
         int getAmount(Resource r) const;
+        string toString() const;
 };
 
 #endif

@@ -29,6 +29,7 @@ PowerplantCard PowerplantMarket::buy(const int index, Deck& deck)
     Card* newCard = deck.draw();
     if(newCard->getType() == CardType::STEP3) {
         deck.setStep3Drawn(true);
+        newCard = deck.draw();
     }
     PowerplantCard* newPowerplant = dynamic_cast<PowerplantCard*>(newCard);
     market[index] = *newPowerplant;

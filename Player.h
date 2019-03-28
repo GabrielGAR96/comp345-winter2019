@@ -10,6 +10,8 @@ using namespace std;
 #include"Card.h"
 #include "HouseColor.h"
 #include "PowerplantCard.h"
+#include "SummaryCard.h"
+#include "Resource.h"
 
 class Player {
     private:
@@ -19,7 +21,8 @@ class Player {
         HouseColor color;
         int numHouses = 21;
         int cardCounter;
-        int money;
+        int money=0;
+        SummaryCard summary;
 
 
         int oilNum=0;
