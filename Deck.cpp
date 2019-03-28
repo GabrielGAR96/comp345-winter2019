@@ -59,7 +59,6 @@ string Deck::toString() const
     string answer = "";
     for(Card* cPtr : deck)
     {
-        if(cPtr->getType == CardType::Powerplant)
         answer += cPtr->info() + "\n\n";
     }
     return answer;

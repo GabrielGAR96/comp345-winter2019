@@ -52,8 +52,6 @@ string Game::gameInfo()
     info += "Powerplant Market:\n";
     info += powerPlants.toString();
     info += "\n";
-    info += "Deck:\n";
-    info += deck.toString();
     return info;
 }
 
