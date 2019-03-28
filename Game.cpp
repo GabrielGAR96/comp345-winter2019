@@ -5,8 +5,6 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
-#include <sstream>
-#include <iomanip>
 using namespace std;
 
 #include <boost/filesystem.hpp>
@@ -16,6 +14,8 @@ using namespace std;
 #include "Map.h"
 #include "MapLoader2.h"
 #include "HouseColor.h"
+#include "Step3Card.h"
+#include "PowerplantCard.h"
 
 Game::Game(vector<Player>& players, Map* board)
     : players(players), board(board)
@@ -24,6 +24,7 @@ Game::Game(vector<Player>& players, Map* board)
     for(Player& player : this->players) {
         player.setMoney(board->getElektroFromBank(50));
     }
+    loadCards();
 }
 
 Game::~Game()
@@ -36,14 +37,23 @@ void Game::restockMarket()
     board->restockMarket(players.size(), step);
 }
 
-string Game::playerInfo()
+string Game::gameInfo()
 {
-    string info = "";
+    string info = "Players:\n";
     int i = 1;
     for(Player& player : players) {
         info += "Player " + to_string(i++) + ":\n";
         info += player.info() + "\n";
     }
+    info += "\n";
+    info += "Resource Market:\n";
+    info += board->marketDescription();
+    info += "\n";
+    info += "Powerplant Market:\n";
+    info += powerPlants.toString();
+    info += "\n";
+    info += "Deck:\n";
+    info += deck.toString();
     return info;
 }
 
@@ -191,200 +201,107 @@ void Game::setupPlayers(int numPlayers, unordered_map<string, HouseColor>& color
     }
 }
 
-int Game::CountMapFalse(){
-    int count = 0;
-    for (int i = 0; i < canBuy.size(); ++i) {
-        if(canBuy[&players[i]] == false) count++;
-    }
-    return count;
-};
+void Game::loadCards()
+{
+    const int NUM_POWER_PLANTS = 42;
+    const int MARKET_SIZE = 8;
 
-bool Game::AddPlayer(Player player) {
-    if(players.size() == MAX_PLAYERS){
-        return false;
-    }
-    players.push_back(player);
-    return true;
-}
+    PowerplantCard cards[NUM_POWER_PLANTS];
 
-void Game::GetPowerplantCards() {
-    for(int i = 0; i < 4 ; i++){
-        cout << "Card: " << powerplantCards[i].getName() << endl;
-        cout << "Price: " << powerplantCards[i].GetPrice() << endl;
-        cout << "Resource: " << powerplantCards[i].getResources() << endl;
-        cout << "Amount needed: " << powerplantCards[i].getNeeded() << endl;
-        cout << "Powerable houses: " <<  powerplantCards[i].getPowerable() << endl;
-        cout << endl;
-    }
-}
+    // We will read the definition of the cards from text... This is better than
+    // hardcoding here
+    fstream input;
 
-void Game::AddPowerplant(PowerplantCard powerplantCard) {
-    powerplantCards.push_back(powerplantCard);
-}
+    // Info from the text file will be stored here
+    int name;
+    string resources;
+    int powerable;
 
-void Game::NewGame() {
-    cout << "New game started!" << endl;
+    input.open("powerplants.txt");
 
-    firstTurn = true;
-    counter = 0;
-    fullTurn = 1;
-    //resets all attributes
-    Phase1Start();
-}
+    // Loop over lines of the text file to collect cards
+    int i = 0;
+    while(input >> name >> resources >> powerable)
+    {
+        PowerplantCard c;
 
-void Game::UpdatePlayOrder(bool reverse) {
-    // Priority: 1 - House
-    for (int i = 0; i < GetPlayers().size()-1; ++i) {
-        for (int j = 1; j < GetPlayers().size(); ++j) {
-            if(players[i].getHouses() > players[j].getHouses()){
-               std::swap(players[i], players[j]);
+        int needed = stoi(resources.substr(0, 1));
+
+        // Skip if we read an ecological plant
+        if(needed > 0)
+        {
+            string types[2];
+            size_t size = 0;
+            size_t start = 2;
+            size_t end = resources.find(",");
+
+            // Resources need some special parsing because a plant might use
+            // more than one type of resource
+            while(end != string::npos)
+            {
+                // Resource records are stored as:
+                // resource1[:resource2]
+                types[size++] = resources.substr(start, end - start);
+                start = end + 1;
+                end = resources.find(",", start);
+
             }
+
+            types[size++] = resources.substr(start, end);
+
+            // Did we find one resource or two
+            if(size == 1) c = PowerplantCard(name, powerable, needed, getResourceByName(types[0]));
+
+            else c = PowerplantCard(name, powerable, needed, getResourceByName(types[0]), getResourceByName(types[1]));
+
+        } else {
+            // Ecological card
+            c = PowerplantCard(name, powerable, needed);
         }
-    }
-    // Priority: 2 - highest value card
-    for (int i = 0; i < GetPlayers().size()-1; ++i) {
-        for (int j = 1; j < GetPlayers().size(); ++j) {
-            if(players[i].getScore() > players[j].getScore()) {
-                std::swap(players[i], players[j]);
-            }
-        }
+        // Deck of only Powerplant cards
+        cards[i++] = c;
     }
 
-    if(reverse) std::reverse(players.begin(), players.end());
-    currentPlayer = &players[0];
+    // We're done
+    input.close();
 
+    // First 8 Powerplants get put in fixed size Market
+    PowerplantCard market[8] = {cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6], cards[7]};
+
+    this->powerPlants.setMarket(market);
+
+    const int FULL_DECK_SIZE = NUM_POWER_PLANTS - MARKET_SIZE;
+
+    // Get the remaining Powerplants for the deck
+    PowerplantCard deckCards[FULL_DECK_SIZE];
+    for(int i = 0; i < FULL_DECK_SIZE; i++)
+    {
+        deckCards[i] = cards[i + MARKET_SIZE];
+    }
+
+    // First ecological Powerplant goes on top of the deck after shuffling so
+    // let's remove it
+    PowerplantCard ecoOne = cards[10];
+
+    // The Step 3 card goes on the bottom of the deck after shuffling
+    Step3Card s3Card;
+
+    // Shuffle the remaining deck cards
+    Deck::shuffle(deckCards, FULL_DECK_SIZE);
+
+    // Create a deck with a linked list
+    list<Card*> deck;
+    for(PowerplantCard& c: deckCards)
+    {
+        // We actually shuffled card 13 into the deck anyway so don't add it
+        // to the real deck
+        if(c == ecoOne) continue;
+        deck.push_back(&c);
+    }
+
+    // Add special cards to their special places
+    deck.push_front(&ecoOne);
+    deck.push_back(&s3Card);
+
+    this->deck.setDeck(deck);
 }
-void Game::Phase1Start() {
-    phase = 0;
-    playPhase = 1;
-    plantIndex = -1;
-    for (Player &player : players) {
-        canBuy[&player] = true;
-        canBid[&player] = true;
-    }
-    playPhase = 1;
-    cout << "Phase 1 started" << endl;
-    cout << "Determining player order" << endl;
-    if(fullTurn == 1){
-    random_shuffle(players.begin(), players.end());
-    currentPlayer = &players[0];
-    }
-    else UpdatePlayOrder(true); //do not sort in first turn
-    for(Player player : players){
-        cout << "playerOrder: " << player.getColor() << endl;
-    }
-
-    cout << "Player order determined successfully!" << endl;
-    Phase2Start();
-}
-
-
-void Game::Phase2Start() {
-    playPhase = 2;
-    cout << "Phase 2 started" << endl;
-
-    // Reset can buy for all players
-
-    for (Player &player : players) {
-        canBuy[&player] = true;
-    }
-    Phase2StartBid();
-}
-//if the counter has accessed every single element in the vector
-//the players that did not skip will be able to bid in their following turn
-void Game::Phase2StartBid() {
-    if(counter == players.size()){
-        for (Player &player : players) {
-            if (canBuy[&player])
-                canBid[&player] = true;
-            else
-                canBid[&player] = false;
-        }
-    }
-    cout << "Current Player: " << currentPlayer->getColor() << endl;
-    cout << "Would you like to bid?" << endl;
-    cin >> nowBidding;
-    if(nowBidding){
-        highestBidder = currentPlayer;
-        Phase2Bid();
-    }
-    else Pass();
-}
-
-void Game::Phase2Bid() {
-
-    if(plantIndex < 0){
-        do{
-            cout << "Select a card to bid" << endl;
-            GetPowerplantCards();
-            cin >> plantIndex;
-        }while(plantIndex >= 4 || plantIndex < 0);
-        currentCard = &powerplantCards[plantIndex];
-    }
-    if(fullTurn > 1){ //in case the current player is not the one who started the auction
-        cout << "Currently auctioning: Card #" << currentCard->getName() << endl;
-        cout << "Current offer: " << currentCard->GetPrice() << endl;
-        cout << "resource: " << currentCard->getResources() << endl;
-
-        currentBid = currentPlayer->auctionCard(*currentCard);
-        if(currentBid != 0)
-            currentCard->SetPrice(currentBid);
-        else Pass();
-    }else currentBid = currentCard->GetPrice(); //in case the current player is the one who started the auction
-    canBid[currentPlayer] = false;
-
-    NextPlayer();
-
-}
-//players who skip will not have a chance to bid in the next turn in the same auction
-void Game::Pass() {
-    if(fullTurn == 1 && firstTurn == true) {
-        cout << "Cannot skip on first turn!" << endl;
-        Phase2StartBid();
-    }
-    canBid[currentPlayer] = false;
-    canBuy[currentPlayer] = false;
-    // go to next player
-    NextPlayer();
-
-}
-
-void Game::NextPlayer() {
-    counter = 0; //counts how many elements the loop has accessed in the vector
-
-        canBid[currentPlayer] = false;
-        for (Player &player : players) {
-            counter++;
-           // cout << canBid[&player] << endl;
-            if (canBid[&player]) {
-                currentPlayer = &player; // next player turn
-                while (CountMapFalse() < 5){
-                    if(currentCard != nullptr) //fullturn only updates if a card is in auction
-                    fullTurn++;
-                Phase2StartBid();
-                }
-        }
-    }
-    Phase2End();
-
-}
-
-
-void Game::Phase2End() {
-    firstTurn = false;
-    cout << highestBidder->getColor() << " player won the auction!" << endl;
-    highestBidder->purchaseCard(*currentCard, currentBid);
-    powerplantCards.erase(std::remove(powerplantCards.begin(), powerplantCards.end(), *currentCard), powerplantCards.end());
-    //powerplantCards.r
-    random_shuffle(powerplantCards.begin() + 8, powerplantCards.end());
-    currentCard = nullptr;
-    currentPlayer = nullptr;
-    for(Player &player : players){
-        player.toString();
-        cout << endl;
-    }
-    Phase1Start();//this should point to the next phase, I'm only pointing to the start of phase 1
-                  //so my loop continues
-
-}
-

@@ -17,6 +17,7 @@ class PowerplantMarket
         PowerplantMarket();
         PowerplantMarket(const PowerplantCard market[8]);
 
+        void setMarket(const PowerplantCard market[8]);
         PowerplantCard buy(const int index, Deck& deck);
         void addTo(const PowerplantCard& card);
         string toString() const;

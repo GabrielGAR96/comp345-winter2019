@@ -6,7 +6,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     Game* game = Game::buildGame();
-    cout << game->playerInfo() << endl;
+    cout << game->gameInfo() << endl;
     delete game;
     return 0;
 }

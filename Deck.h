@@ -14,15 +14,18 @@ class Deck
         list<Card*> deck;
         bool step3 = false;
 
-        void shuffle(PowerplantCard deck[], int size);
     public:
         Deck();
         Deck(PowerplantCard deck[], int size, int ecoOnePos);
+
+        void setDeck(list<Card*> deck);
 
         Card* draw();
         bool step3Drawn();
         void setStep3Drawn(bool step3);
         string toString() const;
+
+        static void shuffle(PowerplantCard deck[], int size);
 };
 
 #endif

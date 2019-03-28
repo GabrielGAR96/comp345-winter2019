@@ -32,6 +32,11 @@ Deck::Deck(PowerplantCard deck[], int size, int ecoOnePos)
     this->deck.push_back(&s3Card);
 }
 
+void Deck::setDeck(list<Card*> deck)
+{
+    this->deck = deck;
+}
+
 Card* Deck::draw()
 {
     Card* answer = deck.front();
@@ -54,6 +59,7 @@ string Deck::toString() const
     string answer = "";
     for(Card* cPtr : deck)
     {
+        if(cPtr->getType == CardType::Powerplant)
         answer += cPtr->info() + "\n\n";
     }
     return answer;

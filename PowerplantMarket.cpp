@@ -1,3 +1,4 @@
+#include <string>
 #include <algorithm>
 using namespace std;
 
@@ -10,6 +11,15 @@ PowerplantMarket::PowerplantMarket()
 }
 
 PowerplantMarket::PowerplantMarket(const PowerplantCard market[8])
+{
+    for(int i = 0; i < 8; i++)
+    {
+        this->market[i] = market[i];
+    }
+    arrange();
+}
+
+void PowerplantMarket::setMarket(const PowerplantCard market[8])
 {
     for(int i = 0; i < 8; i++)
     {
@@ -35,4 +45,13 @@ PowerplantCard PowerplantMarket::buy(const int index, Deck& deck)
     market[index] = *newPowerplant;
     arrange();
     return powerplant;
+}
+
+string PowerplantMarket::toString() const
+{
+    string answer = "";
+    for(PowerplantCard card : market) {
+        answer += card.info() + "\n";
+    }
+    return answer;
 }
