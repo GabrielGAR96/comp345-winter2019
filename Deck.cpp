@@ -32,9 +32,22 @@ Deck::Deck(PowerplantCard deck[], int size, int ecoOnePos)
     this->deck.push_back(&s3Card);
 }
 
-void Deck::setDeck(list<Card*> deck)
+void Deck::setDeck(PowerplantCard deck[], int size, int ecoOnePos, Step3Card& s3Card)
 {
-    this->deck = deck;
+    PowerplantCard ecoOne = deck[ecoOnePos];
+    // The Step 3 card goes on the bottom of the deck after shuffling
+    shuffle(deck, size);
+    // Create a deck with a linked list
+    for(int i = 0; i < size; i++)
+    {
+        // We actually shuffled card 13 into the deck anyway so don't add it
+        // to the real deck
+        if(deck[i] == ecoOne) ecoOnePos = i;
+        this->deck.push_back(&deck[i]);
+    }
+    // Add special cards to their special places
+    this->deck.push_front(&deck[ecoOnePos]);
+    this->deck.push_back(&s3Card);
 }
 
 Card* Deck::draw()

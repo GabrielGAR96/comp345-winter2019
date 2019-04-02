@@ -11,23 +11,44 @@ using namespace std;
 #include "SummaryCard.h"
 #include "PowerplantCard.h"
 #include "Game.h"
+#include "Strategy.h"
 
 using namespace std;
 
 Player::Player(){}
+
 //constructor for a player setting initail $$ and color
-Player::Player(HouseColor color) {
+Player::Player(HouseColor color, Strategy* strategy) {
     this->color = color;
     this->cardCounter = 0;
+    this->strategy = strategy;
 }
-int Player::getNumHouses(){
-  return housesOwned;
+
+Player::Player(const Player& other)
+{
+    this->cities = other.cities;
+    for(int i = 0; i < other.cardCounter; i++) {
+        this->cardArray[i] = other.cardArray[i];
+    }
+    this->mostValuablePlant = other.mostValuablePlant;
+    this->color = other.color;
+    this->numHouses = other.numHouses;
+    this->cardCounter = other.cardCounter;
+    this->money = other.money;
+    this->summary = other.summary;
+    this->strategy = other.strategy->clone();
+    this->oilNum = other.oilNum;
+    this->garbageNum = other.garbageNum;
+    this->uraniumNum = other.uraniumNum;
+    this->coalNum = other.coalNum;
+    this->canBid = other.canBid;
+    this->canAuction = other.canAuction;
 }
-void Player::setHouses(int house){
-  housesOwned += house;
-}
+
 Player::~Player()
 {
+    // LOOK INTO THIS
+    delete strategy;
 }
 
 //auction a selected card modifying the auction value on card
@@ -83,13 +104,13 @@ string Player::getCards() {
 }
 
 //determins score based on highest value card
-int Player::getScore() {
+int Player::getScore() const {
     int price=0;
     int myScore=0;
     for (int i = 0; i < cardCounter; i++)
         if (cardArray[i].getName() > price)
             price = cardArray[i].getName();
-            myScore = price;
+        myScore = price;
     return myScore;
 }
 
@@ -160,6 +181,43 @@ int Player::getHousesLeft() const
     return numHouses;
 }
 
+void Player::auction(Game& game)
+{
+    strategy->auction(game);
+}
+
+void Player::pass()
+{
+    canBid = false;
+    canAuction = false;
+}
+
+bool Player::allowedToBid() const
+{
+    return canBid;
+}
+
+bool Player::allowedToAuction() const
+{
+    return canAuction;
+}
+
+void Player::disallowBidding()
+{
+    canBid = false;
+}
+
+void Player::resetCanBid()
+{
+    if(canAuction) canBid = true;
+}
+
+void Player::resetCanAuction()
+{
+    canBid = true;
+    canAuction = true;
+}
+
 string Player::info()
 {
     string answer = "";
@@ -175,45 +233,6 @@ string Player::info()
     return answer;
 }
 
-void Player::addResource(Resource resource){
-  switch(resource)
-  {
-    case(OIL):
-    oil.push_back(&resource);
-    oilNum++;
-    break;
-    case(URANIUM):
-    uranium.push_back(&resource);
-    uraniumNum++;
-    break;
-    case(GARBAGE):
-    garbage.push_back(&resource);
-    garbageNum++;
-    break;
-    case(COAL):
-    coal.push_back(&resource);
-    coalNum++;
-    break;
-
-  }
-}
-int Player::findNumResource(Resource resource){
-  switch(resource)
-  {
-    case(OIL):
-    return oilNum;
-    break;
-    case(URANIUM):
-    return uraniumNum;
-    break;
-    case(GARBAGE):
-    return garbageNum;
-    break;
-    case(COAL):
-    return coalNum;
-    break;
-  }
-}
 int Player::getOil(){
   return oilNum;
 }
@@ -226,6 +245,7 @@ int Player::getUranium(){
 int Player::getGarbage(){
   return garbageNum;
 }
+
 void Player::getTotResources(){
   cout<<"GARBARGE = "<<garbageNum<<endl;
   cout<<"COAL = "<<coalNum<<endl;
@@ -238,39 +258,49 @@ int Player::powerCard(){
   for(int i=0;i<cardCounter;i++){
     cout<<i+1<<": " << cardArray[i].info();
   }
-  //int housespowered;
-  //int card
-  //cin>>card;
-  //cardArray[card]
 return 0;
 }
+
 int Player:: getCardCounter(){
   return cardCounter;
 }
+
 PowerplantCard &Player::getCard(int position){
   return cardArray[position];
 }
-void Player::deleteResource(Resource resource){
-  switch(resource)
-  {
-    case(OIL):
-    oil.pop_back();
-    oilNum--;
-    break;
-    case(URANIUM):
-    uranium.pop_back();
-    uraniumNum--;
-    break;
-    case(GARBAGE):
-    garbage.pop_back();
-    garbageNum--;
-    break;
-    case(COAL):
-    coal.pop_back();
-    coalNum--;
-    break;
-  }
-}
+
 int Player::gettotstored(){
   return oilNum + uraniumNum + garbageNum + coalNum;
+}
+
+bool Player::operator<(const Player& rhs) const
+{
+    if(this->cities.size() == rhs.cities.size()) {
+        return this->getScore() < rhs.getScore();
+    }
+    return this->cities.size() < rhs.cities.size();
+}
+
+Player& Player::operator=(const Player& rhs)
+{
+    if(this == &rhs) return *this;
+    this->cities = rhs.cities;
+    for(int i = 0; i < rhs.cardCounter; i++) {
+        this->cardArray[i] = rhs.cardArray[i];
+    }
+    this->mostValuablePlant = rhs.mostValuablePlant;
+    this->color = rhs.color;
+    this->numHouses = rhs.numHouses;
+    this->cardCounter = rhs.cardCounter;
+    this->money = rhs.money;
+    this->summary = rhs.summary;
+    this->strategy = rhs.strategy->clone();
+    this->oilNum = rhs.oilNum;
+    this->garbageNum = rhs.garbageNum;
+    this->uraniumNum = rhs.uraniumNum;
+    this->coalNum = rhs.coalNum;
+    this->canBid = rhs.canBid;
+    this->canAuction = rhs.canAuction;
+
+    return *this;
 }

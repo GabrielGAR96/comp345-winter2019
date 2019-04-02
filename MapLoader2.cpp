@@ -29,6 +29,7 @@ Map* MapLoader2::load(string& fname)
     input.close();
 
     if(!powergrid->isValid()) {
+        delete powergrid;
         throw BadMap(fname + " represents a disconnected map");
     }
 

@@ -7,6 +7,7 @@ using namespace std;
 
 #include "Card.h"
 #include "PowerplantCard.h"
+#include "Step3Card.h"
 
 class Deck
 {
@@ -18,7 +19,7 @@ class Deck
         Deck();
         Deck(PowerplantCard deck[], int size, int ecoOnePos);
 
-        void setDeck(list<Card*> deck);
+        void setDeck(PowerplantCard deck[], int size, int ecoOnePos, Step3Card& s3Card);
 
         Card* draw();
         bool step3Drawn();

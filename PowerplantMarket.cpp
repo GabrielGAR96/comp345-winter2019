@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <algorithm>
 using namespace std;
 
@@ -28,23 +29,54 @@ void PowerplantMarket::setMarket(const PowerplantCard market[8])
     arrange();
 }
 
-void PowerplantMarket::arrange()
+void PowerplantMarket::setAuctioningCard(int selection)
 {
-    sort(market, market+7);
+    currentlyAuctioning = selection;
+    currentBid = market[selection].getName() - 1;
 }
 
-PowerplantCard PowerplantMarket::buy(const int index, Deck& deck)
+const PowerplantCard& PowerplantMarket::getAuctioningCard() const
 {
-    PowerplantCard powerplant = market[index];
+    if(currentlyAuctioning == -1) {
+        throw -1;
+    }
+    return market[currentlyAuctioning];
+}
+
+int PowerplantMarket::getCurrentBid() const
+{
+    return currentBid;
+}
+
+void PowerplantMarket::setCurrentBid(int bid)
+{
+    currentBid = bid;
+}
+
+PowerplantCard PowerplantMarket::buy(Deck& deck)
+{
+    PowerplantCard powerplant = market[currentlyAuctioning];
+
     Card* newCard = deck.draw();
     if(newCard->getType() == CardType::STEP3) {
         deck.setStep3Drawn(true);
         newCard = deck.draw();
     }
     PowerplantCard* newPowerplant = dynamic_cast<PowerplantCard*>(newCard);
-    market[index] = *newPowerplant;
+    market[currentlyAuctioning] = *newPowerplant;
+    currentlyAuctioning = -1;
+    currentBid = -1;
     arrange();
     return powerplant;
+}
+
+string PowerplantMarket::getActualMarket() const
+{
+    string answer = "";
+    for(int i = 0; i < 4; i++) {
+        answer += market[i].info() + "\n";
+    }
+    return answer;
 }
 
 string PowerplantMarket::toString() const
@@ -54,4 +86,9 @@ string PowerplantMarket::toString() const
         answer += card.info() + "\n";
     }
     return answer;
+}
+
+void PowerplantMarket::arrange()
+{
+    sort(market, market+7);
 }

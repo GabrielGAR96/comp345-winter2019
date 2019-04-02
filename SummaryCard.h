@@ -35,6 +35,8 @@ class SummaryCard : public Card
 
         // Simple toString() like method
         string info() const;
+
+        SummaryCard& operator=(const SummaryCard& rhs);
 };
 
 #endif

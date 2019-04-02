@@ -121,7 +121,7 @@ bool PowerplantCard::operator==(const PowerplantCard& rhs) const
 
 bool PowerplantCard::operator<(const PowerplantCard& rhs) const
 {
-    return this->name > rhs.name;
+    return this->name < rhs.name;
 }
 
 ostream& operator<<(ostream& out, const PowerplantCard& c)

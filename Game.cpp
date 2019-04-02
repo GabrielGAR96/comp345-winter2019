@@ -17,6 +17,10 @@ using namespace std;
 #include "Step3Card.h"
 #include "PowerplantCard.h"
 
+Game::Game()
+{
+}
+
 Game::Game(vector<Player>& players, Map* board)
     : players(players), board(board)
 {
@@ -24,12 +28,101 @@ Game::Game(vector<Player>& players, Map* board)
     for(Player& player : this->players) {
         player.setMoney(board->getElektroFromBank(50));
     }
-    loadCards();
+    cards = loadCards();
+    // First 8 Powerplants get put in fixed size Market
+    PowerplantCard market[8] = {cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6], cards[7]};
+    powerPlants.setMarket(market);
+    int ecoOnePos = 2;
+    int deckSize = 32;
+    PowerplantCard* deck = cards + 8;
+    this->deck.setDeck(deck, deckSize, ecoOnePos, s3Card);
 }
 
 Game::~Game()
 {
     delete board;
+    delete [] cards;
+}
+
+Player& Game::getCurrentPlayer()
+{
+    return players[currentPlayerIndex];
+}
+
+PowerplantMarket& Game::getMarket()
+{
+    return powerPlants;
+}
+
+bool Game::isFirstRound() const
+{
+    return firstRound;
+}
+
+void Game::phase1()
+{
+    /* sort(players.begin(), players.end()); */
+}
+
+void Game::phase2()
+{
+    int auctionee = currentPlayerIndex;
+    int participants = players.size();
+    while(true) {
+        int currentWinnerIndex = -1;
+        int bidders = 0;
+        for(Player& player : players) {
+            if(player.allowedToBid()) bidders++;
+        }
+        Player* currentPlayer = &players[auctionee];
+        while(true) {
+            currentPlayer->auction(*this);
+            if(currentPlayer->allowedToBid()) currentWinnerIndex = currentPlayerIndex;
+            else {
+                bidders--;
+                if(!currentPlayer->allowedToAuction()) participants--;
+            }
+            // There is a winner
+            if(bidders <= 1) break;
+            // Next players chance to bid
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+            currentPlayer = &players[currentPlayerIndex];
+            while(!currentPlayer->allowedToBid()) {
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+                currentPlayer = &players[currentPlayerIndex];
+            }
+        }
+        if(auctioning) {
+            int price  = powerPlants.getCurrentBid();
+            PowerplantCard card = powerPlants.buy(deck);
+            players[currentWinnerIndex].purchaseCard(card, price);
+            players[currentWinnerIndex].pass(); // Can't participate in future auctions
+            participants--;
+            for(Player& player : players) {
+                player.resetCanBid();
+            }
+            auctioning = false;
+        }
+        if(participants == 0) break;
+        auctionee = (auctionee + 1) % players.size();
+        while(!players[auctionee].allowedToAuction()) {
+            auctionee = (auctionee + 1) % players.size();
+        }
+        currentPlayerIndex = auctionee;
+    }
+    for(Player& player : players) {
+        player.resetCanAuction();
+    }
+}
+
+bool Game::auctionStarted() const
+{
+    return auctioning;
+}
+
+void Game::setAuctionStarted(bool auctioning)
+{
+    this->auctioning = auctioning;
 }
 
 void Game::restockMarket()
@@ -73,6 +166,7 @@ Game* Game::buildGame()
     cout << endl;
     return new Game(players, powergrid);
 }
+
 
 struct pathLeafString
 {
@@ -143,7 +237,7 @@ void Game::selectPlayerColor(int i, unordered_map<string, HouseColor>& colors, v
         cout << "Player " << i << " select a house color: ";
         cin >> selection;
         if(colors.find(selection) != colors.end()) {
-            players.push_back(Player(colors[selection]));
+            players.push_back(Player(colors[selection], new HumanStrategy()));
             colors.erase(selection);
             colorSelected = true;
         } else {
@@ -199,12 +293,12 @@ void Game::setupPlayers(int numPlayers, unordered_map<string, HouseColor>& color
     }
 }
 
-void Game::loadCards()
+PowerplantCard* Game::loadCards()
 {
     const int NUM_POWER_PLANTS = 42;
     const int MARKET_SIZE = 8;
 
-    PowerplantCard cards[NUM_POWER_PLANTS];
+    PowerplantCard* cards = new PowerplantCard[NUM_POWER_PLANTS];
 
     // We will read the definition of the cards from text... This is better than
     // hardcoding here
@@ -262,44 +356,45 @@ void Game::loadCards()
 
     // We're done
     input.close();
+    return cards;
 
     // First 8 Powerplants get put in fixed size Market
-    PowerplantCard market[8] = {cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6], cards[7]};
+    /* PowerplantCard market[8] = {cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6], cards[7]}; */
 
-    this->powerPlants.setMarket(market);
+    /* this->powerPlants.setMarket(market); */
 
-    const int FULL_DECK_SIZE = NUM_POWER_PLANTS - MARKET_SIZE;
+    /* const int FULL_DECK_SIZE = NUM_POWER_PLANTS - MARKET_SIZE; */
 
-    // Get the remaining Powerplants for the deck
-    PowerplantCard deckCards[FULL_DECK_SIZE];
-    for(int i = 0; i < FULL_DECK_SIZE; i++)
-    {
-        deckCards[i] = cards[i + MARKET_SIZE];
-    }
+    /* // Get the remaining Powerplants for the deck */
+    /* PowerplantCard deckCards[FULL_DECK_SIZE]; */
+    /* for(int i = 0; i < FULL_DECK_SIZE; i++) */
+    /* { */
+    /*     deckCards[i] = cards[i + MARKET_SIZE]; */
+    /* } */
 
-    // First ecological Powerplant goes on top of the deck after shuffling so
-    // let's remove it
-    PowerplantCard ecoOne = cards[10];
+    /* // First ecological Powerplant goes on top of the deck after shuffling so */
+    /* // let's remove it */
+    /* PowerplantCard ecoOne = cards[10]; */
 
-    // The Step 3 card goes on the bottom of the deck after shuffling
-    Step3Card s3Card;
+    /* // The Step 3 card goes on the bottom of the deck after shuffling */
+    /* Step3Card s3Card; */
 
-    // Shuffle the remaining deck cards
-    Deck::shuffle(deckCards, FULL_DECK_SIZE);
+    /* // Shuffle the remaining deck cards */
+    /* Deck::shuffle(deckCards, FULL_DECK_SIZE); */
 
-    // Create a deck with a linked list
-    list<Card*> deck;
-    for(PowerplantCard& c: deckCards)
-    {
-        // We actually shuffled card 13 into the deck anyway so don't add it
-        // to the real deck
-        if(c == ecoOne) continue;
-        deck.push_back(&c);
-    }
+    /* // Create a deck with a linked list */
+    /* list<Card*> deck; */
+    /* for(PowerplantCard& c: deckCards) */
+    /* { */
+    /*     // We actually shuffled card 13 into the deck anyway so don't add it */
+    /*     // to the real deck */
+    /*     if(c == ecoOne) continue; */
+    /*     deck.push_back(&c); */
+    /* } */
 
-    // Add special cards to their special places
-    deck.push_front(&ecoOne);
-    deck.push_back(&s3Card);
+    /* // Add special cards to their special places */
+    /* deck.push_front(&ecoOne); */
+    /* deck.push_back(&s3Card); */
 
-    this->deck.setDeck(deck);
+    /* return deck; */
 }

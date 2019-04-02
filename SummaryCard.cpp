@@ -29,3 +29,8 @@ string SummaryCard::info() const
     }
     return info;
 }
+
+SummaryCard& SummaryCard::operator=(const SummaryCard& rhs)
+{
+    return *this;
+}

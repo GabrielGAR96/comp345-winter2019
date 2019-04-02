@@ -5,48 +5,43 @@
 #include<vector>
 using namespace std;
 
-#include"House.h"
-#include"Resource.h"
-#include"Card.h"
+#include "House.h"
+#include "Resource.h"
+#include "Card.h"
 #include "HouseColor.h"
 #include "PowerplantCard.h"
 #include "SummaryCard.h"
-#include "Resource.h"
+#include "Strategy.h"
+
+class Game;
 
 class Player {
     private:
-        string name;
         vector<string> cities;
         PowerplantCard cardArray[3];
+        int mostValuablePlant = 0;
         HouseColor color;
         int numHouses = 21;
         int cardCounter;
         int money=0;
         SummaryCard summary;
-        int housesOwned=4;
 
+        Strategy* strategy;
 
         int oilNum=0;
         int garbageNum=0;
         int uraniumNum=0;
         int coalNum=0;
 
-        std::vector<Resource*> garbage;
-        std::vector<Resource*> uranium;
-        std::vector<Resource*> oil;
-        std::vector<Resource*> coal;
-        vector<shared_ptr<PowerplantCard>> powerPlants;
-        vector<shared_ptr<House>> houses;
+        bool canBid = true;
+        bool canAuction = true;
+
     public:
-        void setHouses(int houses);
-        int getNumHouses();
         Player();
-        Player(HouseColor color);
+        Player(HouseColor color, Strategy* strategy);
+        Player(const Player& other);
         ~Player();
 
-        //getters and setters for name
-        string GetName() const { return name; }
-        void SetName(string name) { this->name = name; }
         //method to choose a card on the board and set it for auction
         int auctionCard(PowerplantCard card);
         //method to purchase card
@@ -55,7 +50,7 @@ class Player {
         string getCards();
         PowerplantCard &getCard(int position);
         //determines score from owned cards
-        int getScore();
+        int getScore() const;
         //chooses resources to buy
         void buyResources();
         //setter for $$
@@ -72,10 +67,16 @@ class Player {
         string getCities();
         //returns the number of cities currently owned
         int getNumCities();
-        //return the number of houses currently owned
-        vector<shared_ptr<House>>& getHouses() { return houses; }
         string getColor();
         int getHousesLeft() const;
+
+        void auction(Game& game);
+        void pass();
+        bool allowedToBid() const;
+        bool allowedToAuction() const;
+        void disallowBidding();
+        void resetCanBid();
+        void resetCanAuction();
 
         void toString();
         string info();
@@ -94,6 +95,10 @@ class Player {
         int getUranium();
         int getGarbage();
         void getTotResources();
+
+        bool operator<(const Player& rhs) const;
+
+        Player& operator=(const Player& rhs);
 };
 
 #endif
