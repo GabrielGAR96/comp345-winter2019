@@ -8,8 +8,8 @@
 #include <string>
 using namespace std;
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
+//#include <boost/archive/text_oarchive.hpp>
+//#include <boost/archive/text_iarchive.hpp>
 
 #include "HouseColor.h"
 
@@ -18,7 +18,7 @@ private: //data members
     int price = 0;
     HouseColor houseColor;
 
-    friend class boost::serialization::access;
+  //  friend class boost::serialization::access;
     template<typename Archive>
     void serialize(Archive & ar, const unsigned int version)
     {

@@ -4,7 +4,7 @@
 #include <unordered_map>
 using namespace std;
 
-#include <boost/archive/text_oarchive.hpp>
+//#include <boost/archive/text_oarchive.hpp>
 
 #include "Map.h"
 #include "City.h"
@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
     ofstream output(fname);
 
     {
-        boost::archive::text_oarchive ar(output);
-        ar & powergrid;
+    //    boost::archive::text_oarchive ar(output);
+    //    ar & powergrid;
     }
     return 0;
 }
