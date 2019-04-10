@@ -59,11 +59,6 @@ int Map::getCheapestResource(Resource r) const
     return market.getCheapest(r);
 }
 
-Resource Map::buyResource(Resource r)
-{
-    return market.buy(r);
-}
-
 int Map::getResourceAmount(Resource r) const
 {
     return market.getAmount(r);
@@ -159,7 +154,7 @@ string Map::printMap() const
     unordered_set<City> cities = powergrid.getVerts();
     for(City c : cities)
     {
-        mapText += c.getName() + ":" + to_string(c.getRegion()) + ":" + c.getHouses() + "\n";
+        mapText += c.getName() + ":" + to_string(c.getRegion()) + "\n"; // + ":" + c.getHouses() + "\n";
     }
     mapText += "--CITIES--\n\n";
     mapText += "--CONNECTIONS--\n";
@@ -168,21 +163,26 @@ string Map::printMap() const
         mapText += edge.source.getName() + ":" + edge.dest.getName() + ":" + to_string(static_cast<int>(edge.cost)) + "\n";
     }
     mapText += "--CONNECTIONS--\n\n";
-    mapText += "--MARKET--\n";
-    mapText += "COAL: " + to_string(market.getAmount(COAL)) + " OIL: " + to_string(market.getAmount(OIL)) + " GARBAGE: " + to_string(market.getAmount(GARBAGE)) + " URANIUM: " + to_string(market.getAmount(URANIUM)) + "\n";
-    mapText += "--MARKET--\n\n";
-    mapText += "--POOL--\n";
-    mapText += "COAL: " + to_string(pool.getAvailable(COAL)) + " OIL: " + to_string(pool.getAvailable(OIL)) + " GARBAGE: " + to_string(pool.getAvailable(GARBAGE)) + " URANIUM: " + to_string(pool.getAvailable(URANIUM)) + "\n";
-    mapText += "--POOL--\n\n";
-    mapText += "--BANK--\n";
-    mapText += to_string(bank.getElektro()) + "\n";
-    mapText += "--BANK--";
+    /* mapText += "--MARKET--\n"; */
+    /* mapText += "COAL: " + to_string(market.getAmount(COAL)) + " OIL: " + to_string(market.getAmount(OIL)) + " GARBAGE: " + to_string(market.getAmount(GARBAGE)) + " URANIUM: " + to_string(market.getAmount(URANIUM)) + "\n"; */
+    /* mapText += "--MARKET--\n\n"; */
+    /* mapText += "--POOL--\n"; */
+    /* mapText += "COAL: " + to_string(pool.getAvailable(COAL)) + " OIL: " + to_string(pool.getAvailable(OIL)) + " GARBAGE: " + to_string(pool.getAvailable(GARBAGE)) + " URANIUM: " + to_string(pool.getAvailable(URANIUM)) + "\n"; */
+    /* mapText += "--POOL--\n\n"; */
+    /* mapText += "--BANK--\n"; */
+    /* mapText += to_string(bank.getElektro()) + "\n"; */
+    /* mapText += "--BANK--"; */
     return mapText;
 }
 
 string Map::marketDescription() const
 {
     return market.toString();
+}
+
+ResourceMarket& Map::getResourceMarket()
+{
+    return market;
 }
 
 ostream& operator<<(ostream& out, const Map& m)

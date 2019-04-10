@@ -66,6 +66,16 @@ bool City::build(House house)
     return false;
 }
 
+int City::getNumOccupants() const
+{
+    return numOccupants;
+}
+
+int City::getPrice() const
+{
+    return buildingCost;
+}
+
 // City objects with the same name are equal
 // Region doesn't matter as all names are unique
 bool City::operator<(const City & rhs) const

@@ -10,15 +10,15 @@ using namespace std;
 #include "Player.h"
 #include "Deck.h"
 #include "PowerplantMarket.h"
-#include "PowerplantCard.h"
 #include "Elektro.h"
 #include "Card.h"
-#include "Step3Card.h"
 
 class Game
 {
 
     private:
+        static const int PAYOUT[21];
+
         vector<Player> players;
         int step = 1;
         bool firstRound = true;
@@ -30,7 +30,7 @@ class Game
         int currentPlayerIndex = 0;
         bool auctioning;
 
-        static void readDirectory(const string& name, map<int, string>& files);
+        /* static void readDirectory(const string& name, map<int, string>& files); */
         static Map* selectMap(map<int, string>& files);
         static int selectNumberOfPlayers();
         static void selectPlayerColor(int i, unordered_map<string, HouseColor>& colors, vector<Player>& players);
@@ -44,6 +44,7 @@ class Game
 
         Player& getCurrentPlayer();
         PowerplantMarket& getMarket();
+        int getStep() const;
 
         bool isFirstRound() const;
 
@@ -59,6 +60,7 @@ class Game
         void phase4();
         void phase5();
 
+        Map& getMap();
         void restockMarket();
         string gameInfo();
 

@@ -2,13 +2,14 @@
 #define MAP_H
 
 #include <string>
+#include <set>
 using namespace std;
 
-#include <boost/serialization/set.hpp>
-using namespace boost::serialization;
+/* #include <boost/serialization/set.hpp> */
+/* using namespace boost::serialization; */
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
+/* #include <boost/archive/text_oarchive.hpp> */
+/* #include <boost/archive/text_iarchive.hpp> */
 
 #include "Graph.h"
 #include "Resource.h"
@@ -29,15 +30,15 @@ class Map
 
         set<int> activeRegions;
 
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
-            ar & powergrid;
-            ar & pool;
-            ar & market;
-            ar & bank;
-        }
+        /* friend class boost::serialization::access; */
+        /* template<typename Archive> */
+        /* void serialize(Archive & ar, const unsigned int version) */
+        /* { */
+        /*     ar & powergrid; */
+        /*     ar & pool; */
+        /*     ar & market; */
+        /*     ar & bank; */
+        /* } */
     public:
         // Constructors
 
@@ -52,7 +53,6 @@ class Map
         void addResourceToPool(Resource r, int n);
         void restockMarket(int numPlayers, int step);
         int getCheapestResource(Resource r) const;
-        Resource buyResource(Resource r);
         int getResourceAmount(Resource r) const;
 
         void useRegion(int region);
@@ -74,6 +74,7 @@ class Map
         // Return a string suitable for writing to save file
         string printMap() const;
         string marketDescription() const;
+        ResourceMarket& getResourceMarket();
 
     friend ostream& operator<<(ostream& out, const Map& m);
 };

@@ -1,21 +1,24 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <iterator>
 #include <algorithm>
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <dirent.h>
 using namespace std;
 
-#include <boost/filesystem.hpp>
+/* #include <boost/filesystem.hpp> */
 
 #include "Game.h"
 #include "Player.h"
 #include "Map.h"
-#include "MapLoader2.h"
+#include "MapLoader.h"
 #include "HouseColor.h"
-#include "Step3Card.h"
-#include "PowerplantCard.h"
+#include "Card.h"
+
+const int Game::PAYOUT[21] = {10, 22, 33, 44, 54, 64, 73, 82, 90, 98, 105, 112, 118, 124, 129, 134, 138, 142, 145, 148, 150};
 
 Game::Game()
 {
@@ -54,6 +57,11 @@ PowerplantMarket& Game::getMarket()
     return powerPlants;
 }
 
+int Game::getStep() const
+{
+    return step;
+}
+
 bool Game::isFirstRound() const
 {
     return firstRound;
@@ -61,7 +69,8 @@ bool Game::isFirstRound() const
 
 void Game::phase1()
 {
-    /* sort(players.begin(), players.end()); */
+    sort(players.begin(), players.end());
+    currentPlayerIndex = 0;
 }
 
 void Game::phase2()
@@ -93,10 +102,42 @@ void Game::phase2()
             }
         }
         if(auctioning) {
+            Player& winner = players[currentWinnerIndex];
             int price  = powerPlants.getCurrentBid();
             PowerplantCard card = powerPlants.buy(deck);
-            players[currentWinnerIndex].purchaseCard(card, price);
-            players[currentWinnerIndex].pass(); // Can't participate in future auctions
+            if(winner.getCardCounter() == 3) {
+                cout << "You must discard a powerplant" << endl;
+                vector<PowerplantCard> playerCards = winner.getCards();
+                int index = 1;
+                for(PowerplantCard& powerplant : playerCards) {
+                    cout << index++ << endl;
+                    cout << powerplant.info() << endl;
+                }
+                int removeIndex = 0;
+                while(removeIndex < 1 || removeIndex > 3) {
+                    cout << "Pick a card (1-3): ";
+                    cin >> removeIndex;
+                    if(removeIndex < 1 || removeIndex > 3) {
+                        cout << "Invalid choice" << endl;
+                    }
+                }
+                PowerplantCard& toRemove = playerCards[removeIndex];
+                winner.removeCard(toRemove);
+            }
+            winner.purchaseCard(card, price);
+            int poolCoal = -1*min(0, winner.allowedToStore(COAL));
+            int poolOil = -1*min(0, winner.allowedToStore(OIL));
+            int poolGarbage = -1*min(0, winner.allowedToStore(GARBAGE));
+            int poolUranium = -1*min(0, winner.allowedToStore(URANIUM));
+            board->addResourceToPool(COAL, poolCoal);
+            board->addResourceToPool(OIL, poolOil);
+            board->addResourceToPool(GARBAGE, poolGarbage);
+            board->addResourceToPool(URANIUM, poolUranium);
+            winner.removeResources(COAL, poolCoal);
+            winner.removeResources(OIL, poolOil);
+            winner.removeResources(GARBAGE, poolGarbage);
+            winner.removeResources(URANIUM, poolUranium);
+            winner.pass(); // Can't participate in future auctions
             participants--;
             for(Player& player : players) {
                 player.resetCanBid();
@@ -113,6 +154,8 @@ void Game::phase2()
     for(Player& player : players) {
         player.resetCanAuction();
     }
+    reverse(players.begin(), players.end());
+    currentPlayerIndex = 0;
 }
 
 bool Game::auctionStarted() const
@@ -123,6 +166,39 @@ bool Game::auctionStarted() const
 void Game::setAuctionStarted(bool auctioning)
 {
     this->auctioning = auctioning;
+}
+
+void Game::phase3()
+{
+    for(Player& player : players) {
+        while(player.purchaseResources(*this));
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    }
+}
+
+void Game::phase4()
+{
+    for(Player& player : players) {
+        while(player.buildCities(*this));
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    }
+}
+
+void Game::phase5()
+{
+    for(Player& player : players) {
+        while(player.powerCities(*this));
+        int currentMoney = player.getMoney();
+        int pay = PAYOUT[player.getNumToPower()];
+        player.setMoney(currentMoney + pay);
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    }
+    cout << gameInfo() << endl;
+}
+
+Map& Game::getMap()
+{
+    return *board;
 }
 
 void Game::restockMarket()
@@ -157,7 +233,18 @@ Game* Game::buildGame()
                                                 {"green", GREEN},
                                                 {"purple", PURPLE}};
     map<int, string> files;
-    readDirectory("./maps/", files);
+    /* readDirectory("./maps/", files); */
+    DIR *dir;
+    struct dirent *ent;
+    int i = 1;
+    if((dir = opendir("./maps")) != NULL) {
+        while((ent = readdir(dir)) != NULL) {
+            files.insert({i++, string(ent->d_name)});
+        }
+        closedir(dir);
+    } else {
+        throw -1;
+    }
     Map* powergrid = selectMap(files);
     int numPlayers = selectNumberOfPlayers();
     vector<Player> players;
@@ -168,22 +255,22 @@ Game* Game::buildGame()
 }
 
 
-struct pathLeafString
-{
-    pair<int, string> operator()(const boost::filesystem::directory_entry& entry) const
-    {
-        static int i = 1;
-        return make_pair(i++, entry.path().leaf().string());
-    }
-};
+/* struct pathLeafString */
+/* { */
+/*     pair<int, string> operator()(const boost::filesystem::directory_entry& entry) const */
+/*     { */
+/*         static int i = 1; */
+/*         return make_pair(i++, entry.path().leaf().string()); */
+/*     } */
+/* }; */
 
-void Game::readDirectory(const string& name, map<int, string>& files)
-{
-    boost::filesystem::path p(name);
-    boost::filesystem::directory_iterator start(p);
-    boost::filesystem::directory_iterator end;
-    transform(start, end, inserter(files, files.end()), pathLeafString());
-}
+/* void Game::readDirectory(const string& name, map<int, string>& files) */
+/* { */
+/*     boost::filesystem::path p(name); */
+/*     boost::filesystem::directory_iterator start(p); */
+/*     boost::filesystem::directory_iterator end; */
+/*     transform(start, end, inserter(files, files.end()), pathLeafString()); */
+/* } */
 
 Map* Game::selectMap(map<int, string>& files)
 {
@@ -198,10 +285,10 @@ Map* Game::selectMap(map<int, string>& files)
         int selection;
         cout << endl << "select by entering #: ";
         cin >> selection;
-        string file = "./maps/" + files[selection];
+        string file = files[selection];
         cout << endl << "loading " << file << endl;
         try {
-            powergrid = MapLoader2::load(file);
+            powergrid = MapLoader::load(file);
             loaded = true;
         } catch(BadMap& ex) {
             cout << ex.what() << endl << endl;
@@ -344,7 +431,7 @@ PowerplantCard* Game::loadCards()
             // Did we find one resource or two
             if(size == 1) c = PowerplantCard(name, powerable, needed, getResourceByName(types[0]));
 
-            else c = PowerplantCard(name, powerable, needed, getResourceByName(types[0]), getResourceByName(types[1]));
+            else c = PowerplantCard(name, powerable, needed, COALOIL);
 
         } else {
             // Ecological card

@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-#include "PowerplantCard.h"
+#include "Card.h"
 #include "Deck.h"
 
 class PowerplantMarket

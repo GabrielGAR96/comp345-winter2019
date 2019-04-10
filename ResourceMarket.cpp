@@ -67,36 +67,37 @@ int ResourceMarket::getCheapest(Resource r) const
     throw invalid_argument("No such resource " + getResourceName(r));
 }
 
-Resource ResourceMarket::buy(Resource r)
+void ResourceMarket::buy(Resource r, int n)
 {
     switch(r)
     {
         case COAL:
-            if (amountCoal > 0) {
-                amountCoal--;
-                indexCoal++;
-                return COAL;
+            if (amountCoal - n > 0) {
+                amountCoal -= n;
+                indexCoal += n;
+                break;
             }
         case OIL:
-            if (amountOil > 0) {
-                amountOil--;
-                indexOil++;
-                return OIL;
+            if (amountOil - n > 0) {
+                amountOil -= n;
+                indexOil += n;
+                break;
             }
         case GARBAGE:
-            if(amountGarbage > 0) {
-                amountGarbage--;
-                indexGarbage++;
-                return GARBAGE;
+            if(amountGarbage - n > 0) {
+                amountGarbage -= n;
+                indexGarbage += n;
+                break;
             }
         case URANIUM:
-            if(amountUranium > 0) {
-                amountUranium--;
-                indexUranium++;
-                return URANIUM;
+            if(amountUranium - n > 0) {
+                amountUranium -= n;
+                indexUranium += n;
+                break;
             }
+        default:
+            throw invalid_argument("Cannot process request");
     }
-    throw invalid_argument("No such resource " + getResourceName(r));
 }
 
 void ResourceMarket::restock(ResourcePool& pool, int numPlayers, int step)
@@ -138,8 +139,45 @@ int ResourceMarket::getAmount(Resource r) const
     throw invalid_argument("No such resource " + getResourceName(r));
 }
 
+int ResourceMarket::getPrice(Resource r, int n) const
+{
+    int resourceAmount, resourceIndex, cheapestPrice, nextSlot, amount;
+    int price = 0;
+    switch(r)
+    {
+        case COAL:
+            resourceAmount = amountCoal;
+            resourceIndex = indexCoal;
+            break;
+        case OIL:
+            resourceAmount = amountOil;
+            resourceIndex = indexOil;
+            break;
+        case GARBAGE:
+            resourceAmount = amountGarbage;
+            resourceIndex = indexGarbage;
+            break;
+        case URANIUM:
+            resourceAmount = amountUranium;
+            resourceIndex = indexUranium;
+            break;
+    }
+
+    if(n > resourceAmount) return -1;
+    cheapestPrice = resourceIndex / 3 + 1;
+    nextSlot = (cheapestPrice) * 3;
+    amount = min(nextSlot - resourceIndex, n);
+    price = 0;
+    while(n > 0) {
+        price += amount * cheapestPrice++;
+        n -= amount;
+        amount = min(3, n);
+    }
+    return price;
+}
+
 string ResourceMarket::toString() const
 {
-    string answer = "Coal: " + to_string(amountCoal) + "Oil: " + to_string(amountOil) + "Garbage: " + to_string(amountGarbage) + "Uranium: " + to_string(amountUranium);
+    string answer = "Coal: " + to_string(amountCoal) + " Oil: " + to_string(amountOil) + " Garbage: " + to_string(amountGarbage) + " Uranium: " + to_string(amountUranium);
     return answer;
 }

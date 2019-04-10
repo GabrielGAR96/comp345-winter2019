@@ -65,6 +65,8 @@ class City
         string getHouses() const;
         // build a House object and increase numOccupants and buildingCost
         bool build(House house);
+        int getNumOccupants() const;
+        int getPrice() const;
 
         // Operators
 

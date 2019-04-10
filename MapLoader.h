@@ -19,17 +19,6 @@ class MapLoader
         // string(source):string(dest):int(cost)
         // ...
         // --CONNECTIONS--
-        // --MARKET--
-        // Resource(type)
-        // ...
-        // --MARKET--
-        // --POOL--
-        // Resource(type)
-        // ...
-        // --POOL--
-        // --BANK--
-        // int(moneyBankHas)
-        // --BANK--
         //
         // Anything else is invalid and NOTE: All sections must be present
         // even if empty
@@ -37,6 +26,12 @@ class MapLoader
         // Also maps with disconnected grids are considered invalid even if
         // syntax is correct
         static Map* load(string& fname);
+};
+
+class BadMap : public logic_error
+{
+    public:
+        BadMap(string msg);
 };
 
 #endif

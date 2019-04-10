@@ -9,8 +9,6 @@ using namespace std;
 #include "Resource.h"
 #include "Card.h"
 #include "HouseColor.h"
-#include "PowerplantCard.h"
-#include "SummaryCard.h"
 #include "Strategy.h"
 
 class Game;
@@ -18,11 +16,12 @@ class Game;
 class Player {
     private:
         vector<string> cities;
-        PowerplantCard cardArray[3];
+        vector<PowerplantCard> cards;
+        int cardCounter;
+        bool hasCard = false;
         int mostValuablePlant = 0;
         HouseColor color;
         int numHouses = 21;
-        int cardCounter;
         int money=0;
         SummaryCard summary;
 
@@ -33,6 +32,14 @@ class Player {
         int uraniumNum=0;
         int coalNum=0;
 
+        int maxOil = 0;
+        int maxCoal = 0;
+        int maxGarbage = 0;
+        int maxUranium = 0;
+        int extraCoalOrOil = 0;
+
+        int numToPower = 0;
+
         bool canBid = true;
         bool canAuction = true;
 
@@ -42,33 +49,26 @@ class Player {
         Player(const Player& other);
         ~Player();
 
-        //method to choose a card on the board and set it for auction
-        int auctionCard(PowerplantCard card);
-        //method to purchase card
-        void purchaseCard(PowerplantCard card, int value);
+        void purchaseCard(PowerplantCard& card, int value);
+        void removeCard(PowerplantCard& card);
+        int allowedToStore(Resource r) const;
         //method to get cards
-        string getCards();
-        PowerplantCard &getCard(int position);
-        //determines score from owned cards
-        int getScore() const;
-        //chooses resources to buy
-        void buyResources();
+        vector<PowerplantCard> getCards() const;
+        void buyResources(Resource r, int value, int price);
+        void removeResources(Resource r, int n);
         //setter for $$
         void setMoney(int money);
         //geter for $$
         int getMoney();
-        //buys resource and stores it in card
-        void buyResource(int cardPosition, Resource resources, int amount, int price);
-        //gets resources from cards
-        string getResources();
         //adds city name in vector
-        void buyCities(string city);
+        void buyCity(string city, int cost);
         //outputs the cities owned
-        string getCities();
+        vector<string> getCities() const;
         //returns the number of cities currently owned
         int getNumCities();
-        string getColor();
         int getHousesLeft() const;
+        HouseColor getColor() const;
+        int getCardCounter() const;
 
         void auction(Game& game);
         void pass();
@@ -78,23 +78,24 @@ class Player {
         void resetCanBid();
         void resetCanAuction();
 
-        void toString();
+        bool purchaseResources(Game& game);
+
+        bool buildCities(Game& game);
+
+        bool powerCities(Game& game);
+
         string info();
 
         int powerCard();
 
-        int getCardCounter();
+        int getNumCards();
 
-        int powerableHouses();
-        void addResource(Resource resource);
-        void deleteResource(Resource resource);
-        int findNumResource(Resource resource);
-        int gettotstored();
         int getOil();
         int getCoal();
         int getUranium();
         int getGarbage();
-        void getTotResources();
+        
+        int getNumToPower() const;
 
         bool operator<(const Player& rhs) const;
 

@@ -9,10 +9,13 @@ using namespace std;
 #include "Map.h"
 #include "Resource.h"
 
-/* Resource getResourceByName(string r); */
+BadMap::BadMap(string msg)
+    : logic_error(msg)
+{}
 
 Map* MapLoader::load(string& fname)
 {
+    fname = "./maps/" + fname;
     UndirectedGraph<City> graph;
     ifstream input;
     input.open(fname);
@@ -21,10 +24,10 @@ Map* MapLoader::load(string& fname)
 
     // Read fname under the assumption that it has the correct format
     // If not then always return null as indication that Map could not be loaded
-    if(input.eof()) return nullptr;
+    if(input.eof()) throw BadMap("Cannot read " + fname + " because it is malformed");
     input >> sentinal;
-    if(sentinal != "--CITIES--") return nullptr;
-    
+    if(sentinal != "--CITIES--") throw BadMap("Cannot read " + fname + " because it is malformed");
+
     // Collect cities for vertex population and later edge creation
     unordered_map<string, City> cities;
     while(input >> infoLine)
@@ -41,9 +44,9 @@ Map* MapLoader::load(string& fname)
     }
 
     // Collect information about edges
-    if(input.eof()) return nullptr;
+    if(input.eof()) throw BadMap("Cannot read " + fname + " because it is malformed");
     input >> sentinal;
-    if(sentinal != "--CONNECTIONS--") return nullptr;
+    if(sentinal != "--CONNECTIONS--") throw BadMap("Cannot read " + fname + " because it is malformed");
     while(input >> infoLine)
     {
         if(infoLine == sentinal) break;
@@ -60,41 +63,10 @@ Map* MapLoader::load(string& fname)
 
     // We know enough to make the Powergrid
     Map* powerGrid = new Map(graph);
-
-    // Collect the information about other game areas
-    input >> sentinal;
-    if(sentinal != "--MARKET--")
-    {
-        // powerGrid is a pointer if we don't plan on using it we should delete
-        // it here
+    if(!powerGrid->isValid()) {
         delete powerGrid;
-        return nullptr;
+        throw BadMap(fname + " represents a disconnected map");
     }
-    while(input >> infoLine)
-    {
-        if(infoLine == sentinal) break;
-    }
-
-    input >> sentinal;
-    if(sentinal != "--POOL--")
-    {
-        delete powerGrid;
-        return nullptr;
-    }
-    while(input >> infoLine)
-    {
-        if(infoLine == sentinal) break;
-        powerGrid->addResourceToPool(getResourceByName(infoLine), 1);
-    }
-
-    input >> sentinal;
-    if(sentinal != "--BANK--")
-    {
-        delete powerGrid;
-        return nullptr;
-    }
-    input >> infoLine;
-    if(infoLine != sentinal) powerGrid->addElektroToBank(stoi(infoLine));
 
     input.close();
     return powerGrid;

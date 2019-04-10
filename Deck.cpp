@@ -3,8 +3,6 @@
 using namespace std;
 
 #include "Card.h"
-#include "PowerplantCard.h"
-#include "Step3Card.h"
 #include "Deck.h"
 
 Deck::Deck()

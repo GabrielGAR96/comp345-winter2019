@@ -7,19 +7,19 @@
 #ifndef POWERGRID_ELEKTRO_H
 #define POWERGRID_ELEKTRO_H
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
+/* #include <boost/archive/text_oarchive.hpp> */
+/* #include <boost/archive/text_iarchive.hpp> */
 
 class Elektro{
 private:
     int elektro;
 
-    friend class boost::serialization::access;
-    template<typename Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & elektro;
-    }
+    /* friend class boost::serialization::access; */
+    /* template<typename Archive> */
+    /* void serialize(Archive & ar, const unsigned int version) */
+    /* { */
+    /*     ar & elektro; */
+    /* } */
 public:
     Elektro(int elektro) : elektro(elektro) {}
 

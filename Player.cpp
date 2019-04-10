@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <cmath>
+#include <algorithm>
 using namespace std;
 
 #include "Player.h"
@@ -8,8 +10,6 @@ using namespace std;
 #include"Resource.h"
 #include"Card.h"
 #include "HouseColor.h"
-#include "SummaryCard.h"
-#include "PowerplantCard.h"
 #include "Game.h"
 #include "Strategy.h"
 
@@ -27,9 +27,7 @@ Player::Player(HouseColor color, Strategy* strategy) {
 Player::Player(const Player& other)
 {
     this->cities = other.cities;
-    for(int i = 0; i < other.cardCounter; i++) {
-        this->cardArray[i] = other.cardArray[i];
-    }
+    this->cards = other.cards;
     this->mostValuablePlant = other.mostValuablePlant;
     this->color = other.color;
     this->numHouses = other.numHouses;
@@ -43,75 +41,105 @@ Player::Player(const Player& other)
     this->coalNum = other.coalNum;
     this->canBid = other.canBid;
     this->canAuction = other.canAuction;
+    this->maxOil = other.maxOil;
+    this->maxCoal = other.maxCoal;
+    this->maxGarbage = other.maxGarbage;
+    this->maxUranium = other.maxUranium;
+    this->extraCoalOrOil = other.extraCoalOrOil;
+    this->numToPower = other.numToPower;
 }
 
 Player::~Player()
 {
-    // LOOK INTO THIS
     delete strategy;
 }
 
-//auction a selected card modifying the auction value on card
-int Player::auctionCard(PowerplantCard card) {
-        int bet;
-        cout << "Please enter an auction amount: ";
-        cin >> bet;
-        while (bet <= card.GetPrice()) {
-            cout << "Please enter a bet greater than the current auction value: ";
-            cin >> bet;
-        }
-        while (bet > money) {
-            cout << "You do not have enough Elektro to bet!!" << endl;
-            cout << "Enter a different amout or bet 0 to skip: ";
-            cin >> bet;
-            if (bet == 0)
-                return 0;
-        }
-        card.SetPrice(bet);
-        return card.GetPrice();
-}
-
 //buy a card and places in card array, if player already has 3 cards it will ask to swap for one
-void Player::purchaseCard(PowerplantCard card, int value) {
-    if (cardCounter == 3) {
-        int position;
-        cout << "What card would you like to swap with?" << endl;
-        cout << "Press 1 for " << cardArray[0].getName();
-        cout << "\nPress 2 for " << cardArray[1].getName();
-        cout << "\nPress 3 for " << cardArray[2].getName();
-        cin >> position;
-        while (position > 3 || position < 0) {
-            cout << "Please chose a valid option or press -1 to cancel trade: ";
-            cin >> position;
-            if (position == -1)
-                return;
+void Player::purchaseCard(PowerplantCard& card, int value) {
+    if(hasCard) {
+        if(mostValuablePlant < card.getName()) {
+            mostValuablePlant = card.getName();
         }
+    } else {
+        hasCard = true;
+        mostValuablePlant = card.getName();
     }
-    money = money - value;
-    cardArray[cardCounter] = card;
-    if(!(cardCounter == 3))
+    cards.push_back(card);
+    int canStore = card.getNeeded() * 2;
+    switch(card.getResourceType()) {
+        case COALOIL:
+            maxCoal += canStore;
+            maxOil += canStore;
+            extraCoalOrOil += canStore;
+            break;
+        case COAL:
+            maxCoal += canStore;
+            break;
+        case OIL:
+            maxOil += canStore;
+            break;
+        case GARBAGE:
+            maxGarbage += canStore;
+            break;
+        case URANIUM:
+            maxUranium += canStore;
+            break;
+    }
+    money -= value;
     cardCounter++;
 }
 
-//outputs the players current cards
-string Player::getCards() {
-    string myCards = "";
-    for (int i = 0; i < cardCounter; i++) {
-        myCards.append(cardArray[i].info());
+void Player::removeCard(PowerplantCard& card)
+{
+    cards.erase(remove(cards.begin(), cards.end(), card), cards.end());
+    int canStore = card.getNeeded() * 2;
+    switch(card.getResourceType()) {
+        case COALOIL:
+            maxCoal -= canStore;
+            maxOil -= canStore;
+            extraCoalOrOil += canStore;
+            break;
+        case COAL:
+            maxCoal -= canStore;
+            break;
+        case OIL:
+            maxOil -= canStore;
+            break;
+        case GARBAGE:
+            maxGarbage -= canStore;
+            break;
+        case URANIUM:
+            maxUranium -= canStore;
+            break;
     }
-
-    return myCards;
 }
 
-//determins score based on highest value card
-int Player::getScore() const {
-    int price=0;
-    int myScore=0;
-    for (int i = 0; i < cardCounter; i++)
-        if (cardArray[i].getName() > price)
-            price = cardArray[i].getName();
-        myScore = price;
-    return myScore;
+int Player::allowedToStore(Resource r) const
+{
+    switch(r) {
+        case COAL:
+            if(extraCoalOrOil > 0 ) {
+                return maxCoal + extraCoalOrOil - (max(0, oilNum - maxOil)) - coalNum;
+            }
+            return maxCoal - coalNum;
+        case OIL:
+            if(extraCoalOrOil > 0) {
+                return maxOil + extraCoalOrOil - (max(0, coalNum - maxCoal)) - oilNum;
+            }
+            return maxOil - oilNum;
+        case GARBAGE:
+            return maxGarbage - garbageNum;
+        case URANIUM:
+            return maxUranium - uraniumNum;
+        default:
+            throw -1;
+    }
+}
+
+//outputs the players current cards
+vector<PowerplantCard> Player::getCards() const
+{
+    return cards;
 }
 
 //setter for Elektro
@@ -126,59 +154,71 @@ int Player::getMoney() {
 
 //returns the number of cities the player currently owns
 int Player::getNumCities() {
-        return cities.size();
-    }
-
-//buys resources based on the currently owned cards and stores it in the card
-void Player::buyResource(int cardPosition, Resource resources, int amount, int price) {
-    for (int i = 0; i < amount; i++) {
-        cardArray[cardPosition].store(resources);
-        this->money = money - price;
-    }
+    return cities.size();
 }
 
-//outputs the resources the player owns
-string Player::getResources() {
-    string result = "";
-    for (int i = 0; i < cardCounter; i++) {
-        result.append(cardArray[i].getResources() + " ");
+void Player::buyResources(Resource r, int value, int price)
+{
+    switch(r) {
+        case COAL:
+            coalNum += value;
+            break;
+        case OIL:
+            oilNum += value;
+            break;
+        case GARBAGE:
+            garbageNum += value;
+            break;
+        case URANIUM:
+            uraniumNum += value;
+            break;
+        default:
+            throw -1;
     }
-    return result;
+    money -= price;
+}
+
+void Player::removeResources(Resource r, int n)
+{
+    switch(r) {
+        case COAL:
+            coalNum -= n;
+            break;
+        case OIL:
+            oilNum -= n;
+            break;
+        case GARBAGE:
+            garbageNum -= n;
+            break;
+        case URANIUM:
+            uraniumNum -= n;
+            break;
+        default:
+            throw -1;
+    }
 }
 
 //adds the the name of the cities that the player owns in a vector
-void Player::buyCities(string city) {
+void Player::buyCity(string city, int cost) {
     cities.push_back(city);
+    money -= cost;
+    numHouses--;
 }
 
 //outputs the cities that the player owns
-string Player::getCities() {
-    string city;
-    for (string c : cities)
-        city.append(c + " ");
-    return city;
-}
-
-
-string Player::getColor() {
-    return getHouseColorName(color);
-
-}
-
-void Player::toString(){
-    std::cout << "Score: " << this->getScore() <<'\n';
-    std::cout << "Color: " << this->getColor()<<'\n';
-    std::cout << "Elektro:  " <<this->getMoney() <<'\n';
-    std::cout << "Resources: " <<"\n"<<endl;
-    getTotResources();
-
-    std::cout << "\nCities: " << this->getCities()<<'\n';
-    std::cout << "Cards:\n" << this->getCards()<<'\n';
+vector<string> Player::getCities() const
+{
+    return cities;
 }
 
 int Player::getHousesLeft() const
 {
     return numHouses;
+}
+
+HouseColor Player::getColor() const
+{
+    return color;
 }
 
 void Player::auction(Game& game)
@@ -218,17 +258,155 @@ void Player::resetCanAuction()
     canAuction = true;
 }
 
+bool Player::purchaseResources(Game& game)
+{
+    return strategy->purchaseResources(game);
+}
+
+bool Player::buildCities(Game& game)
+{
+    return strategy->purchaseCities(game);
+}
+
+int Player::getNumToPower() const
+{
+    return numToPower;
+}
+
+bool Player::powerCities(Game& game)
+{
+    int coalToUse = 0;
+    int oilToUse = 0;
+    int garbageToUse = 0;
+    int uraniumToUse = 0;
+
+    numToPower = 0;
+    bool cardsToUse[3] = {false, false, false};
+
+    char response = 'n';
+    while(true) {
+        cout << "Player " << getHouseColorName(color) << endl;
+        cout << "Would you like to power cities (y/N): ";
+        cin >> response;
+        response = (char)tolower(response);
+        if(response == 'y' || response == 'n') break;
+        else cout << "Invalid response.. Please try again" << endl;
+    }
+    if(response == 'n') return false;
+    int plants = 0;
+    while(plants < cardCounter) {
+        int index;
+        for(PowerplantCard& card : cards) {
+            cout << card.info() << endl << endl;
+        }
+        string selector = (cardCounter > 1) ? ("1-" + to_string(cardCounter)) : "1";
+        cout << "Which card would you like to use (" + selector + "): ";
+        cin >> index;
+        if(index < 1 || index > cardCounter) {
+            cout << "Invalid selection... Try again" << endl;
+            continue;
+        }
+        if(cardsToUse[index-1]) {
+            cout << "You have already selected this card" << endl;
+            continue;
+        }
+        PowerplantCard& card = cards[index-1];
+        Resource uses = card.getResourceType();
+        int resourceAmount;
+        switch(uses) {
+            case COALOIL:
+                resourceAmount = coalNum + oilNum;
+                break;
+            case COAL:
+                resourceAmount = coalNum;
+                break;
+            case OIL:
+                resourceAmount = oilNum;
+                break;
+            case GARBAGE:
+                resourceAmount = garbageNum;
+                break;
+            case URANIUM:
+                resourceAmount = uraniumNum;
+                break;
+        }
+        if(resourceAmount < card.getNeeded()) {
+            cout << "You cannot use this card... insufficient resources available" << endl;
+            return true;
+        }
+        cardsToUse[index-1] = true;
+        numToPower += card.getPowerable();
+        if(uses == COALOIL) {
+            cout << "Coal: " << coalNum << " Oil: " << oilNum << endl;
+            cout << "You need " << card.getNeeded() << " coal/oil in any combination" << endl;
+            int selectCoal = 0;
+            while(true) {
+                if(coalNum > 0) {
+                    cout << "How much coal do you want to use (1-" << coalNum << ", 0 to cancel): ";
+                    cin >> selectCoal;
+                    if(oilNum + selectCoal < card.getNeeded()) {
+                        cout << "You must select more coal (you do not have enough oil)" << endl;
+                        continue;
+                    }
+                    if(selectCoal < 0 || selectCoal > coalNum) {
+                        cout << "Invalid selection... Try again" << endl;
+                        continue;
+                    }
+                }
+            }
+            int selectOil = 0;
+            while(true) {
+                if(oilNum > 0 && selectCoal < card.getNeeded()) {
+                    cout << "How much oil do you want o use (1-" << oilNum << "): ";
+                    cin >> selectOil;
+                    if(selectOil < 0 || selectOil > oilNum) {
+                        cout << "Invalid selection... Try again" << endl;
+                        continue;
+                    }
+                }
+            }
+            coalToUse += selectCoal;
+            oilToUse += selectOil;
+        }
+        if(uses == COAL) coalToUse += card.getNeeded();
+        if(uses == OIL) oilToUse += card.getNeeded();
+        if(uses == GARBAGE) garbageToUse += card.getNeeded();
+        if(uses == URANIUM) uraniumToUse += card.getNeeded();
+        response = 'n';
+        if(plants < cardCounter) {
+            while(true) {
+                cout << "Would you like to continue selecting cards (y/N): ";
+                cin >> response;
+                response = (char)tolower(response);
+                if(response == 'y' || response == 'n') break;
+                else cout << "Invalid response.. Please try again" << endl;
+            }
+            if(response == 'n') break;
+        }
+    }
+    cout << "Powering " << numToPower << " cities" << endl;
+    coalNum -= coalToUse;
+    oilNum -= oilToUse;
+    garbageNum -= garbageToUse;
+    uraniumNum -= uraniumNum;
+    game.getMap().addResourceToPool(COAL, coalToUse);
+    game.getMap().addResourceToPool(OIL, oilToUse);
+    game.getMap().addResourceToPool(GARBAGE, garbageToUse);
+    game.getMap().addResourceToPool(URANIUM, uraniumToUse);
+    return false;
+}
+
+
 string Player::info()
 {
     string answer = "";
-    answer += "Score: " + to_string(getScore()) + "\n";
-    answer += "Color: " + getColor() + "\n";
+    answer += "Player: " + getHouseColorName(color) + "\n";
     answer += "Elektro: " + to_string(getMoney()) + "\n";
-    answer += "Resources: " + getResources() + "\n";
-    answer += "Cities: " + getCities() + "\n";
-    answer += "Cards: " + getCards() + "\n";
+    answer += "Cities: " + to_string(getNumCities()) + "\n";
     answer += "Houses: " + to_string(getHousesLeft()) + "\n";
-    answer += "SummaryCard:\n" + summary.info() + "\n";
+    answer += "Powerplants: " + to_string(cards.size()) + "\n";
+    answer += "Resources: Coal: " + to_string(coalNum) + ", Oil: " + to_string(oilNum) + ", Garbage: " + to_string(garbageNum) + ", Uranium: " + to_string(uraniumNum) + "\n";
+    answer += "Storage capacity: Coal: " + to_string(allowedToStore(COAL)) + ", Oil: " + to_string(allowedToStore(OIL)) + ", Garbage: " + to_string(allowedToStore(GARBAGE)) + ", Uranium: " + to_string(allowedToStore(URANIUM));
 
     return answer;
 }
@@ -246,37 +424,15 @@ int Player::getGarbage(){
   return garbageNum;
 }
 
-void Player::getTotResources(){
-  cout<<"GARBARGE = "<<garbageNum<<endl;
-  cout<<"COAL = "<<coalNum<<endl;
-  cout<<"OIL = "<<oilNum<<endl;
-  cout<<"URANIUM = "<<uraniumNum<<endl;
-}
-int Player::powerCard(){
-
-  cout<<"What card would you like to power?"<<endl;
-  for(int i=0;i<cardCounter;i++){
-    cout<<i+1<<": " << cardArray[i].info();
-  }
-return 0;
-}
-
-int Player:: getCardCounter(){
+int Player:: getCardCounter() const
+{
   return cardCounter;
-}
-
-PowerplantCard &Player::getCard(int position){
-  return cardArray[position];
-}
-
-int Player::gettotstored(){
-  return oilNum + uraniumNum + garbageNum + coalNum;
 }
 
 bool Player::operator<(const Player& rhs) const
 {
     if(this->cities.size() == rhs.cities.size()) {
-        return this->getScore() < rhs.getScore();
+        return this->mostValuablePlant < rhs.mostValuablePlant;
     }
     return this->cities.size() < rhs.cities.size();
 }
@@ -285,10 +441,7 @@ Player& Player::operator=(const Player& rhs)
 {
     if(this == &rhs) return *this;
     this->cities = rhs.cities;
-    for(int i = 0; i < rhs.cardCounter; i++) {
-        this->cardArray[i] = rhs.cardArray[i];
-    }
-    this->mostValuablePlant = rhs.mostValuablePlant;
+    this->cards = rhs.cards;
     this->color = rhs.color;
     this->numHouses = rhs.numHouses;
     this->cardCounter = rhs.cardCounter;
@@ -301,6 +454,12 @@ Player& Player::operator=(const Player& rhs)
     this->coalNum = rhs.coalNum;
     this->canBid = rhs.canBid;
     this->canAuction = rhs.canAuction;
+    this->maxOil = rhs.maxOil;
+    this->maxCoal = rhs.maxCoal;
+    this->maxGarbage = rhs.maxGarbage;
+    this->maxUranium = rhs.maxUranium;
+    this->extraCoalOrOil = rhs.extraCoalOrOil;
+    this->numToPower = rhs.numToPower;
 
     return *this;
 }
