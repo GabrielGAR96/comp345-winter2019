@@ -7,13 +7,8 @@
 #include <vector>
 using namespace std;
 
-<<<<<<< HEAD
-//#include <boost/archive/text_oarchive.hpp>
-//#include <boost/archive/text_iarchive.hpp>
-=======
 /* #include <boost/archive/text_oarchive.hpp> */
 /* #include <boost/archive/text_iarchive.hpp> */
->>>>>>> 94eb920cc7f6dad50876d8c16c1844a7cdba3137
 
 #include "House.h"
 
@@ -39,18 +34,6 @@ class City
         int buildingCost = 10;
         House houses[3];
 
-<<<<<<< HEAD
-        //friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
-            ar & name;
-            ar & region;
-            ar & numOccupants;
-            ar & buildingCost;
-            ar & houses;
-        }
-=======
         /* friend class boost::serialization::access; */
         /* template<typename Archive> */
         /* void serialize(Archive & ar, const unsigned int version) */
@@ -61,7 +44,6 @@ class City
         /*     ar & buildingCost; */
         /*     ar & houses; */
         /* } */
->>>>>>> 94eb920cc7f6dad50876d8c16c1844a7cdba3137
 
     public:
         // Constructors
