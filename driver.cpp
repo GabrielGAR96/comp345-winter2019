@@ -1,18 +1,18 @@
+
 #include "Game.h"
 #include "Subject.h"
-
-class PhaseObserver;
-class GameStatisticsObserver;
+#include "PhaseObserver.h"
+#include "GameStatisticsObserver.h"
 
 int main(int argc, char *argv[])
 {
 
     Game* game = Game::buildGame();
-    PhaseObserver po(game);
-    GameStatisticsObserver gso(game);
+    PhaseObserver po (game);
+    //GameStatisticsObserver gso(game);
 
     game->Attach(&po);
-    game->Attach(&gso);
+    //game->Attach(gso);
 
     game->phase1();
     game->phase2();

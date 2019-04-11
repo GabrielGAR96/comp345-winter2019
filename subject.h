@@ -4,7 +4,7 @@
 using namespace std;
 
 #include "Observer.h"
-
+#include "PhaseObserver.h"
 class Subject{
 
 private:
@@ -14,7 +14,7 @@ private:
 public:
   Subject();
   ~Subject();
-  void Attach(Observer* obs);
+  void Attach(PhaseObserver *obs);
   //virtual void Detatch(Observer* obs);
   void notifyObserver();
 

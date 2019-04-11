@@ -1,14 +1,12 @@
 #include "Observer.h"
 #include "Game.h"
+#include "GameStatisticsObserver.h"
 using namespace std;
-class  GameStatisticsObserver : public Observer{
-  private:
-    Game *game;
-  public:
-    GameStatisticsObserver(Game *game){
+
+    GameStatisticsObserver::GameStatisticsObserver(Game *game){
       game = game;
     }
-    void update(){
+    void GameStatisticsObserver::update(){
       for(int i=0;i<game->getNumPlayers();i++){
         cout<<"Player = " << game->getPlayer(i).getColor()<<endl;
         cout<< "Current location = "<<game->getPlayer(i).getCurrentCity()<<endl;
@@ -22,4 +20,3 @@ class  GameStatisticsObserver : public Observer{
         cout<< "URANIUM: "<<game->getCurrentPlayer().getUranium();
       }
     }
-};

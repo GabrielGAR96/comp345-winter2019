@@ -1,15 +1,13 @@
 #include "Observer.h"
 #include "Game.h"
+#include "PhaseObserver.h"
 using namespace std;
-class PhaseObserver : public Observer
-{
-private:
-  Game *game;
-public:
-  PhaseObserver(Game *game){
-    game = game;
+
+
+  PhaseObserver::PhaseObserver(Game *game){
+    this->game = game;
   }
-  void update(){
+  void PhaseObserver::update(){
     if(game->getPhase()==1){
       cout<<"----------------------------------------------"<<endl;
       cout<<"-------------------PHASE 1--------------------"<<endl;
@@ -58,4 +56,3 @@ public:
       cout<< "URANIUM: "<<game->getCurrentPlayer().getUranium();
     }
   }
-};

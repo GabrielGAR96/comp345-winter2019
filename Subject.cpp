@@ -3,7 +3,11 @@ using namespace std;
 
 #include "Subject.h"
 #include "Observer.h"
-void Subject::Attach(Observer* o){
+
+Subject::Subject(){
+  
+}
+void Subject::Attach(PhaseObserver *o){
   observers.push_back(o);
   subjects++;
 }
