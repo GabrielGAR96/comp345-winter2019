@@ -48,7 +48,7 @@ class Player {
         Player(HouseColor color, Strategy* strategy);
         Player(const Player& other);
         ~Player();
-
+        string getCurrentCity();
         void purchaseCard(PowerplantCard& card, int value);
         void removeCard(PowerplantCard& card);
         int allowedToStore(Resource r) const;
@@ -94,7 +94,7 @@ class Player {
         int getCoal();
         int getUranium();
         int getGarbage();
-        
+
         int getNumToPower() const;
 
         bool operator<(const Player& rhs) const;

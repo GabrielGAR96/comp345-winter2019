@@ -12,8 +12,9 @@ using namespace std;
 #include "PowerplantMarket.h"
 #include "Elektro.h"
 #include "Card.h"
+#include "Subject.h"
 
-class Game
+class Game : public Subject
 {
 
     private:
@@ -29,6 +30,7 @@ class Game
         PowerplantMarket powerPlants;
         int currentPlayerIndex = 0;
         bool auctioning;
+        int phase;
 
         /* static void readDirectory(const string& name, map<int, string>& files); */
         static Map* selectMap(map<int, string>& files);
@@ -38,10 +40,12 @@ class Game
         static void setupPlayers(int numPlayers, unordered_map<string, HouseColor>& colors, vector<Player>& players, Map* powergrid);
 
     public:
+
+        int getNumPlayers();
         Game();
         Game(vector<Player>& players, Map* board);
         ~Game();
-
+        Player getPlayer(int i);
         Player& getCurrentPlayer();
         PowerplantMarket& getMarket();
         int getStep() const;
@@ -63,9 +67,10 @@ class Game
         Map& getMap();
         void restockMarket();
         string gameInfo();
-
+        int getPhase();
         static Game* buildGame();
         PowerplantCard* loadCards();
+        string getPlayerOrder();
 
 };
 

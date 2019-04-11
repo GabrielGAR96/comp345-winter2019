@@ -23,7 +23,13 @@ const int Game::PAYOUT[21] = {10, 22, 33, 44, 54, 64, 73, 82, 90, 98, 105, 112, 
 Game::Game()
 {
 }
-
+string Game::getPlayerOrder(){
+  string s ="";
+  for(Player p : players){
+    s += p.getColor() + " ";
+  }
+  return s;
+}
 Game::Game(vector<Player>& players, Map* board)
     : players(players), board(board)
 {
@@ -40,7 +46,12 @@ Game::Game(vector<Player>& players, Map* board)
     PowerplantCard* deck = cards + 8;
     this->deck.setDeck(deck, deckSize, ecoOnePos, s3Card);
 }
-
+int Game::getPhase(){
+  return phase;
+}
+Player Game::getPlayer(int i){
+  return players[i];
+}
 Game::~Game()
 {
     delete board;
@@ -69,15 +80,22 @@ bool Game::isFirstRound() const
 
 void Game::phase1()
 {
+    phase = 1;
+
     sort(players.begin(), players.end());
     currentPlayerIndex = 0;
+    notifyObserver();
 }
-
+int Game::getNumPlayers(){
+  return players.size();
+}
 void Game::phase2()
 {
+    phase =2;
     int auctionee = currentPlayerIndex;
     int participants = players.size();
     while(true) {
+        notifyObserver();
         int currentWinnerIndex = -1;
         int bidders = 0;
         for(Player& player : players) {
@@ -170,7 +188,9 @@ void Game::setAuctionStarted(bool auctioning)
 
 void Game::phase3()
 {
+  phase = 3;
     for(Player& player : players) {
+      notifyObserver();
         while(player.purchaseResources(*this));
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
@@ -178,7 +198,10 @@ void Game::phase3()
 
 void Game::phase4()
 {
+
+  phase = 4;
     for(Player& player : players) {
+      notifyObserver();
         while(player.buildCities(*this));
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
@@ -186,7 +209,9 @@ void Game::phase4()
 
 void Game::phase5()
 {
+  phase = 5;
     for(Player& player : players) {
+      notifyObserver();
         while(player.powerCities(*this));
         int currentMoney = player.getMoney();
         int pay = PAYOUT[player.getNumToPower()];

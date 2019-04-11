@@ -64,6 +64,7 @@ void Player::purchaseCard(PowerplantCard& card, int value) {
         hasCard = true;
         mostValuablePlant = card.getName();
     }
+
     cards.push_back(card);
     int canStore = card.getNeeded() * 2;
     switch(card.getResourceType()) {
@@ -88,7 +89,9 @@ void Player::purchaseCard(PowerplantCard& card, int value) {
     money -= value;
     cardCounter++;
 }
-
+string Player::getCurrentCity(){
+  return cities[cities.size()-1];
+}
 void Player::removeCard(PowerplantCard& card)
 {
     cards.erase(remove(cards.begin(), cards.end(), card), cards.end());
