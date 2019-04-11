@@ -2,10 +2,14 @@
 using namespace std;
 
 #include "Subject.h"
-#include "Observer.h"
+
 
 Subject::Subject(){
-  
+
+}
+
+Subject::~Subject(){
+
 }
 void Subject::Attach(PhaseObserver *o){
   observers.push_back(o);
@@ -13,6 +17,6 @@ void Subject::Attach(PhaseObserver *o){
 }
 
 void Subject::notifyObserver(){
-      for (Observer* o : observers)
+      for (PhaseObserver* o : observers)
         o->update();
 }

@@ -1,8 +1,8 @@
 #pragma once
-#include "Observer.h"
+
 #include "Game.h"
 using namespace std;
-class PhaseObserver : public Observer{
+class PhaseObserver{
 private:
   Game *game;
 public:

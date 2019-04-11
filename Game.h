@@ -13,7 +13,6 @@ using namespace std;
 #include "Elektro.h"
 #include "Card.h"
 #include "Subject.h"
-
 class Game : public Subject
 {
 
